@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "823064699395",
+    "project_id": "pede-facil-entregadores-db",
+    "storage_bucket": "pede-facil-entregadores-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823064699395:android:819600588ba55a38566436",
+        "android_client_info": {
+          "package_name": "com.herorickystudios.pedefacil_entregas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823064699395-2mcls87no27rj1o7ut0ap2khemgpal9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsqc-3uXpNsImNNrME5M1Suu7bFyBmnYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823064699395-2mcls87no27rj1o7ut0ap2khemgpal9k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
