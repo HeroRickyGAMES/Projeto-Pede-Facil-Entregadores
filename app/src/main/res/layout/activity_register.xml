@@ -26,6 +26,7 @@
             android:id="@+id/radioEntregador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="hitnome"
             android:text="Sou um Entregador"
             android:textSize="20sp" />
 
@@ -33,6 +34,7 @@
             android:id="@+id/radioLoja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="hintloja"
             android:text="Sou uma Loja"
             android:textSize="20sp" />
     </RadioGroup>

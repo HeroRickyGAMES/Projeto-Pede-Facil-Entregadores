@@ -27,10 +27,11 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText editNome, editIdade, editCPF, editEmail, editPIX, editSenha;
-    String nome, idade, CPF, email, PIX, senha, typeACC, getUID;
+    String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType;
     RadioGroup radioAccType, radioPixType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
-
+    int selectIDType, selectIDPIXType;
+    RadioButton radioTypeAcc, radioIDPIXType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,31 @@ public class RegisterActivity extends AppCompatActivity {
         PIX = editPIX.getText().toString();
 
 
+        selectIDType = radioAccType.getCheckedRadioButtonId();
+        selectIDPIXType = radioPixType.getCheckedRadioButtonId();
+
+        radioTypeAcc = (RadioButton) findViewById(selectIDType);
+        radioIDPIXType = (RadioButton) findViewById(selectIDPIXType);
+
+        if(radioTypeAcc.getText().equals("null")){
+            return;
+        }
+
+        if(radioIDPIXType.getText().equals("null")){
+            return;
+        }
+
+        AccType = radioTypeAcc.getText().toString();
+        idPIXType = radioIDPIXType.getText().toString();
+
+        if(AccType.equals("Sou um Entregador")){
+
+            typeACC = "Entregador";
+        }else if(AccType.equals("Sou uma Loja")){
+
+            typeACC = "Loja";
+        }
+
         if(editNome.getText().toString().equals("")
         && editIdade.getText().toString().equals("")
         && editCPF.getText().toString().equals("")
@@ -75,34 +101,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 getUID = FirebaseAuth.getInstance().getUid();
-
-                int selectIDType = radioAccType.getCheckedRadioButtonId();
-                int selectIDPIXType = radioPixType.getCheckedRadioButtonId();
-
-                final RadioButton radioTypeAcc = (RadioButton) findViewById(selectIDType);
-                final RadioButton radioIDPIXType = (RadioButton) findViewById(selectIDPIXType);
-
-                if(radioTypeAcc.getText().equals("null")){
-                    return;
-                }
-
-                if(radioIDPIXType.getText().equals("null")){
-                    return;
-                }
-
-                String AccType = radioTypeAcc.getText().toString();
-                String idPIXType = radioIDPIXType.getText().toString();
-
-
-                if(AccType.equals("Sou um Entregador")){
-
-                    typeACC = "Entregador";
-
-                }else if(AccType.equals("Sou uma Loja")){
-
-                    typeACC = "Loja";
-
-                }
 
                 Map<String, Object> user = new HashMap<>();
                 user.put("nameCompleteUser", nome);
@@ -146,6 +144,14 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
         }
+    }
+    public void hitnome(View view){
+        editNome.setHint("Seu nome completo");
+        editCPF.setHint("CPF");
+    }
+    public void hintloja(View view){
+        editNome.setHint("Razão Social / Nome da Loja");
+        editCPF.setHint("CNPJ");
     }
 
 }
