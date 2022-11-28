@@ -7,7 +7,7 @@
     tools:context=".RegisterActivity">
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioAccType"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -19,14 +19,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2">
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioEntregador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sou um Entregador"
             android:textSize="20sp" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/radioLoja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sou uma Loja"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/editNome"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -61,10 +61,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioAccType" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/editIdade"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -77,7 +77,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/editNome" />
 
     <EditText
         android:id="@+id/editTextNumber"
@@ -93,10 +93,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintTop_toBottomOf="@+id/editIdade" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/editEmailr"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -123,11 +123,11 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/editEmailr" />
 
     <RadioGroup
         android:id="@+id/radioGroup2"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -139,28 +139,28 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email"
             android:textSize="20sp" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/radioTelefone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Telefone"
             android:textSize="20sp" />
 
         <RadioButton
-            android:id="@+id/radioButton5"
+            android:id="@+id/radioCPF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CPF"
             android:textSize="20sp" />
 
         <RadioButton
-            android:id="@+id/radioButton6"
+            android:id="@+id/radioRamdom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Aleatorio"
@@ -168,7 +168,7 @@
     </RadioGroup>
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/editPIXcadastro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -193,6 +193,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
+        app:layout_constraintTop_toBottomOf="@+id/editSenha" />
+
+    <EditText
+        android:id="@+id/editSenha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Digite Sua Senha"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPIXcadastro" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
