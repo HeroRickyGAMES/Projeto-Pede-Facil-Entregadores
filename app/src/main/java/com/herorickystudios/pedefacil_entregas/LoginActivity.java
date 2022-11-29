@@ -1,8 +1,12 @@
 package com.herorickystudios.pedefacil_entregas;
 
+//Programado por HeroRickyGames
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -11,6 +15,8 @@ import android.location.Location;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -19,11 +25,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -31,10 +40,14 @@ public class LoginActivity extends AppCompatActivity {
     EditText editEmail, editSenha;
     LocationRequest locationRequest;
 
+    //API para a localização dos usuarios
+    FusedLocationProviderClient fusedLocationProviderClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         //Ele seta os arquivos da interface para o codigo
         editEmail = findViewById(R.id.editEmail);
@@ -45,11 +58,26 @@ public class LoginActivity extends AppCompatActivity {
         locationRequest.setFastestInterval(1000 * 5);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        updateGPS();
     }
 
     public void login(View view){
         String email = editEmail.getText().toString();
         String senha = editSenha.getText().toString();
+
+        if(email.equals("")){
+            Toast.makeText(this, "Preencha o campo do email", Toast.LENGTH_SHORT).show();
+        }
+        if(senha.equals("")){
+            Toast.makeText(this, "Preencha o campo da senha", Toast.LENGTH_SHORT).show();
+        }
+
+        if(email.equals("") && senha.equals("")){
+
+        }
+        else{
+
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -76,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-
+        }
     }
 
     public void criarcontaAc(View view){
@@ -114,5 +142,46 @@ public class LoginActivity extends AppCompatActivity {
                 }
         }
     }
+    private void updateGPS() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+
+                    if(location == null){
+
+                        Toast.makeText(LoginActivity.this, "O seu GPS está desativado! Por favor, ative o GPS para conseguir usar o Arbor Amorum!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Clique no FAB que centraliza a localização, pós isso, volte ao aplicativo!", Toast.LENGTH_LONG).show();
+
+                        Uri uri = Uri.parse("https://www.google.pt/maps");
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+
+                    Geocoder geocoder = new Geocoder(LoginActivity.this);
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                        String localização = addresses.get(0).getAddressLine(0);
+
+                        //Codigos de registro
+
+                        System.out.println("LOCALIZAÇÃO EXATA: " + localização);
+                    } catch (Exception e) {
+                        System.out.println("Não foi possivel encontrar sua localização!" + e);
+                    }
+                }
+            });
+
+        } else {
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                requestPermissions(new String[]{ Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSION_FINE_LOCATION);
+            }
+
+        }
+    }
 }
