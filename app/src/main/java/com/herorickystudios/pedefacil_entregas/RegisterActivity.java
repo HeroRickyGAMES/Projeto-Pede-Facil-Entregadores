@@ -4,8 +4,16 @@ package com.herorickystudios.pedefacil_entregas;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +21,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,16 +34,23 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     EditText editNome, editIdade, editCPF, editEmail, editPIX, editSenha;
-    String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType;
+    String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType, localização;
     RadioGroup radioAccType, radioPixType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
     int selectIDType, selectIDPIXType;
     RadioButton radioTypeAcc, radioIDPIXType;
+
+    private static final int PERMISSION_FINE_LOCATION = 99;
+    LocationRequest locationRequest;
+
+    //API para a localização dos usuarios
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +66,14 @@ public class RegisterActivity extends AppCompatActivity {
         editPIX = findViewById(R.id.editPIXcadastro);
         radioAccType = findViewById(R.id.radioAccType);
         radioPixType = findViewById(R.id.radioPixType);
+
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(1000 * 30);
+        locationRequest.setFastestInterval(1000 * 5);
+
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        updateGPS();
     }
 
     public void CadastroBtn(View view){
@@ -108,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
                 user.put("idadeUser", idade);
                 user.put("CPF", CPF);
                 user.put("Email", email);
-                user.put("Localização", email);
+                user.put("Localização", localização);
                 user.put("PIX", PIX);
                 user.put("Tipo de conta", typeACC);
                 user.put("Metodo de PIX", idPIXType);
@@ -159,5 +185,60 @@ public class RegisterActivity extends AppCompatActivity {
         editNome.setHint("Razão Social / Nome da Loja");
         editCPF.setHint("CNPJ");
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        switch (requestCode){
+            case PERMISSION_FINE_LOCATION:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //Não fazer nada
+                }else{
+                    Toast.makeText(this, "Esse aplicativo precisa das permissões para funcionar, caso você negou sem querer, acesse as configurações!", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+        }
+    }
+    private void updateGPS() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+
+                    if(location == null){
+
+                        Toast.makeText(RegisterActivity.this, "O seu GPS está desativado! Por favor, ative o GPS para conseguir usar o Arbor Amorum!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, "Clique no FAB que centraliza a localização, pós isso, volte ao aplicativo!", Toast.LENGTH_LONG).show();
+
+                        Uri uri = Uri.parse("https://www.google.pt/maps");
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+
+                    Geocoder geocoder = new Geocoder(RegisterActivity.this);
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                        localização = addresses.get(0).getAddressLine(0);
+
+                        //Codigos de registro
+
+                        System.out.println("LOCALIZAÇÃO EXATA: " + localização);
+                    } catch (Exception e) {
+                        System.out.println("Não foi possivel encontrar sua localização!" + e);
+                    }
+                }
+            });
+
+        } else {
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                requestPermissions(new String[]{ Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSION_FINE_LOCATION);
+            }
+
+        }
+    }
 }
