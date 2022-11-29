@@ -5,6 +5,7 @@ package com.herorickystudios.pedefacil_entregas;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,11 +23,15 @@ public class MainActivity extends AppCompatActivity {
 
     String UID;
     private String nomeUser;
+
     FloatingActionButton fabLojaAdd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startService(new Intent(getBaseContext(), PushNotificationService.class));
 
         fabLojaAdd = findViewById(R.id.fabLojaAdd);
 

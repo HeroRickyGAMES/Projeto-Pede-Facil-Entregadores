@@ -224,8 +224,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                         localização = addresses.get(0).getAddressLine(0);
 
-                        //Codigos de registro
-
                         System.out.println("LOCALIZAÇÃO EXATA: " + localização);
                     } catch (Exception e) {
                         System.out.println("Não foi possivel encontrar sua localização!" + e);
