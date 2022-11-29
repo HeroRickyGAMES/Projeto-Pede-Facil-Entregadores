@@ -5,6 +5,7 @@ package com.herorickystudios.pedefacil_entregas;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -131,6 +132,11 @@ public class RegisterActivity extends AppCompatActivity {
                         System.out.println("Ocorreu um erro: "+ e);
                     }
                 });
+
+            //Starta a Activity
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            startActivity(intent);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
