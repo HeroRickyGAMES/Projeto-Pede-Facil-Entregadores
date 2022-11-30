@@ -1,8 +1,21 @@
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url  "https://cardinalcommerceprod.jfrog.io/artifactory/android"
+            credentials {
+                // Be sure to add these non-sensitive credentials in order to retrieve dependencies from
+                // the private repository.
+                username marvenUsername
+                password marvenPassword
+            }
+        }
+    }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.14'
     }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
+}
 plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
