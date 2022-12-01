@@ -36,10 +36,6 @@
             android:value="AIzaSyC4xjcqqSIqt-UrvFLYLIN7CGYqJnxr2Rk" />
 
         <activity
-            android:name=".MapsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
-        <activity
             android:name=".mandarSolicitacao"
             android:exported="false">
             <meta-data
