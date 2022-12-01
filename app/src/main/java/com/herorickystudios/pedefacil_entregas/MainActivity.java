@@ -38,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
         fabLojaAdd = findViewById(R.id.fabLojaAdd);
 
         fabLojaAdd.hide();
-        //Esconde a action Bar
-        getSupportActionBar().hide();
+
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
 
                 if(document.exists()){
+                    setTitle("Lista de itens para entrega proximos a você");
                     nomeUser = document.getString("nameCompleteUser");
                 }
             }
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(document.exists()){
                     fabLojaAdd.show();
-
+                    setTitle("Itens adicionados por sua loja");
                     nomeUser = document.getString("nameCompleteUser");
 
                 }
