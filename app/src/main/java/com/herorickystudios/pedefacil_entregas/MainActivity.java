@@ -18,14 +18,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import br.com.gerencianet.mobile.Gerencianet;
-import br.com.gerencianet.mobile.exceptions.GerencianetException;
-
 public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
@@ -82,21 +74,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-        HashMap<String, Object> options = new HashMap();
-
-        options.put("client_id", "client_id ");
-
-        options.put("client_secret", "client_secret");
-
-        options.put("sandbox", true);
-
-        try {
-            Gerencianet gn = new Gerencianet(options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }
