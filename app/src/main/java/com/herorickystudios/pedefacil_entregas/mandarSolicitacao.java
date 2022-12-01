@@ -33,7 +33,7 @@ import java.util.Locale;
 public class mandarSolicitacao extends AppCompatActivity {
 
     Double latitude, longitude, distance;
-    private String lat, log, UID, latDb, longDB;
+    private String lat, log, UID, latDb, longDB, calculoporKm;
     private FirebaseFirestore usersDb;
     EditText editNomeProduto, editLocalização;
     TextView textDistancia, textPreço;
@@ -67,6 +67,7 @@ public class mandarSolicitacao extends AppCompatActivity {
 
 
         DocumentReference LojaDocument =  usersDb.collection("Loja").document(user.getUid());
+        DocumentReference CalculoDocument =  usersDb.collection("Server").document("ServerValues");
 
         LojaDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -75,9 +76,20 @@ public class mandarSolicitacao extends AppCompatActivity {
 
                 if(document.exists()){
 
-
                     latDb = document.getString("Latitude");
                     longDB = document.getString("Longitude");
+
+                }
+            }
+        });
+
+        CalculoDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if(document.exists()) {
+
+                    calculoporKm = document.getString("valorPorKm");
 
                 }
             }
@@ -141,10 +153,15 @@ public class mandarSolicitacao extends AppCompatActivity {
 
                     textDistancia.setText("Distancia do estabelecimento até o local: " + String.format("%.2f", distance / 1000) + "km");
 
-                    System.out.println("Distancia: " + distance);
+                    String kms = String.format("%.2f", distance / 10000).replaceAll("," , "");
+                    Integer calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10;
+
+                    textPreço.setText("Preço: R$ " + calculodePreco + ",00");
+
+                    System.out.println("Distancia: " + calculodePreco);
+
                 }
             }
         });
-
     }
 }
