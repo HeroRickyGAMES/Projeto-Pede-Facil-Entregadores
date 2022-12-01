@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -20,6 +20,13 @@
         android:theme="@style/Theme.PedeFacilEntregas"
         tools:targetApi="31">
         <activity
+            android:name=".mandarSolicitacao"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".NotifyVerify"
             android:exported="false">
             <meta-data
@@ -32,6 +39,7 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,18 +59,20 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-        <receiver android:name=".BootCompletedIntentReceiver"
+
+        <receiver
+            android:name=".BootCompletedIntentReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service android:name=".PushNotificationService"/>
+
+        <service android:name=".PushNotificationService" />
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
