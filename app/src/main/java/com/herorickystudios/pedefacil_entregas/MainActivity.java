@@ -7,20 +7,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.components.BuildConfig;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
+    private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
-
     String UID;
     private String nomeUser;
 
@@ -73,5 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 }

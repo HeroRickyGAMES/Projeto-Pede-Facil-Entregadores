@@ -2,15 +2,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url  "https://cardinalcommerceprod.jfrog.io/artifactory/android"
-            credentials {
-                // Be sure to add these non-sensitive credentials in order to retrieve dependencies from
-                // the private repository.
-                username marvenUsername
-                password marvenPassword
-            }
-        }
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.14'
