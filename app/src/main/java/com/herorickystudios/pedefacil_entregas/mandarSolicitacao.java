@@ -27,13 +27,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class mandarSolicitacao extends AppCompatActivity {
 
     Double latitude, longitude, distance;
-    private String lat, log, UID, latDb, longDB, calculoporKm, simounao;
+    private String lat, log, UID, latDb, longDB, calculoporKm, simounao, autorname, autorlocale;
     private FirebaseFirestore usersDb;
     EditText editNomeProduto, editLocalização;
     TextView textDistancia, textPreço;
@@ -96,6 +98,8 @@ public class mandarSolicitacao extends AppCompatActivity {
 
                     latDb = document.getString("Latitude");
                     longDB = document.getString("Longitude");
+                    autorname = document.getString("nameCompleteUser");
+                    autorlocale = document.getString("Localização");
 
                 }
             }
@@ -116,6 +120,85 @@ public class mandarSolicitacao extends AppCompatActivity {
     }
     public void btn(View view){
 
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        String result = null;
+
+        if(editLocalização.getText().toString().equals("")) {
+
+            Toast.makeText(mandarSolicitacao.this, "Preencha o campo de Localização!", Toast.LENGTH_SHORT).show();
+
+        }else{
+            try {
+                List addressList = geocoder.getFromLocationName(editLocalização.getText().toString(), 1);
+                if (addressList != null && addressList.size() > 0) {
+                    Address address = (Address) addressList.get(0);
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.append(address.getLatitude()).append("\n");
+                    sb.append(address.getLongitude()).append("\n");
+
+                    //Reconverte para Lat e long
+
+                    lat = String.valueOf(address.getLatitude());
+                    log = String.valueOf(address.getLongitude());
+                    System.out.println("Em Latitude e longitude " + lat + " " +  log);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            latitude = Double.valueOf(latDb);
+            longitude = Double.valueOf(longDB);
+
+            Double late = Double.valueOf(lat);
+            Double loge = Double.valueOf(log);
+
+
+            System.out.println("LOCALIZAÇÃO EXATA EM CODIGO: " + latitude + longitude);
+
+            LatLng inicial = new LatLng(latitude, longitude);
+            LatLng endpoint = new LatLng(late, loge);
+
+            distance = SphericalUtil.computeDistanceBetween(inicial, endpoint);
+
+
+            //Calcula a distancia de um ponto a para um ponto b com o LatLng
+            Toast.makeText(mandarSolicitacao.this, "A distancia é  \n " + String.format("%.2f", distance / 1000) + "km", Toast.LENGTH_SHORT).show();
+
+            textDistancia.setText("Distancia do estabelecimento até o local: " + String.format("%.2f", distance / 1000) + "km");
+
+            String kms = String.format("%.2f", distance / 10000).replaceAll("," , "");
+
+            if(simounao == null){
+
+            }else{
+
+                if(simounao.equals("Sim")){
+
+                    calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10 + 5;
+
+                }else{
+
+                    calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10;
+
+                }
+
+                textPreço.setText("Preço: R$ " + calculodePreco + ",00");
+
+                System.out.println("Distancia: " + calculodePreco);
+
+            }
+        }
+
+        if( editNomeProduto.getText().toString().equals("") || editLocalização.getText().toString().equals("")){
+
+            Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
+
+        }else{
+
+            sandtoDB();
+
+        }
     }
 
     private void updateGPS() {
@@ -194,5 +277,29 @@ public class mandarSolicitacao extends AppCompatActivity {
               }
             }
         });
+    }
+    public void sandtoDB(){
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("Pertence a", autorname);
+        data.put("Localização", autorlocale);
+        data.put("Nome do produto", editNomeProduto.getText().toString());
+        data.put("Local de Entrega", editLocalização.getText().toString());
+        data.put("Distancia", String.format("%.2f", distance / 1000) + "km");
+
+
+        if(simounao.equals("Sim")){
+
+            data.put("É retornavel", true);
+
+        }else{
+
+            data.put("É retornavel", false);
+
+        }
+
+        data.put("Preço", calculodePreco + ",00");
+
+        usersDb.collection("Solicitacoes-Entregas").add(data);
     }
 }
