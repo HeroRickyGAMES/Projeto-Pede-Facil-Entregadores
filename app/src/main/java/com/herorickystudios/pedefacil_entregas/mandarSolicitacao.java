@@ -33,14 +33,15 @@ import java.util.Locale;
 public class mandarSolicitacao extends AppCompatActivity {
 
     Double latitude, longitude, distance;
-    private String lat, log, UID, latDb, longDB, calculoporKm;
+    private String lat, log, UID, latDb, longDB, calculoporKm, simounao;
     private FirebaseFirestore usersDb;
     EditText editNomeProduto, editLocalização;
     TextView textDistancia, textPreço;
-    RadioGroup radioSimouNao;
-    RadioButton radioSim, radioNao;
     Button buttonCalcularDistancia;
-
+    Integer calculodePreco;
+    int selectIDSim, selectIDNao;
+    boolean sim, nao;
+    RadioButton button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +51,6 @@ public class mandarSolicitacao extends AppCompatActivity {
         editLocalização = findViewById(R.id.editLocalização);
         textDistancia = findViewById(R.id.textDistancia);
         textPreço = findViewById(R.id.textPreço);
-        radioSimouNao = findViewById(R.id.radioSimouNao);
-        radioSim = findViewById(R.id.radioSim);
-        radioNao = findViewById(R.id.radioNao);
         buttonCalcularDistancia = findViewById(R.id.buttonCalcularDistancia);
 
         setTitle("Adicionar Item");
@@ -65,6 +63,26 @@ public class mandarSolicitacao extends AppCompatActivity {
 
         usersDb = FirebaseFirestore.getInstance();
 
+
+        final RadioGroup group = (RadioGroup) findViewById(R.id.radioSimouNao);
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                button = (RadioButton) group.findViewById(checkedId);
+                simounao = button.getText().toString();
+
+
+                System.out.println(simounao);
+
+
+                if(simounao.equals("Sim")){
+                    sim = true;
+                }
+                if(simounao.equals("Não")){
+                    nao = true;
+                }
+            }
+        });
 
         DocumentReference LojaDocument =  usersDb.collection("Loja").document(user.getUid());
         DocumentReference CalculoDocument =  usersDb.collection("Server").document("ServerValues");
@@ -101,7 +119,6 @@ public class mandarSolicitacao extends AppCompatActivity {
     }
 
     private void updateGPS() {
-
 
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         String result = null;
@@ -154,13 +171,27 @@ public class mandarSolicitacao extends AppCompatActivity {
                     textDistancia.setText("Distancia do estabelecimento até o local: " + String.format("%.2f", distance / 1000) + "km");
 
                     String kms = String.format("%.2f", distance / 10000).replaceAll("," , "");
-                    Integer calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10;
+
+                    if(simounao == null){
+
+                    }else{
+
+                    if(simounao.equals("Sim")){
+
+                        calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10 + 5;
+
+                    }else{
+
+                        calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10;
+
+                    }
 
                     textPreço.setText("Preço: R$ " + calculodePreco + ",00");
 
                     System.out.println("Distancia: " + calculodePreco);
 
                 }
+              }
             }
         });
     }
