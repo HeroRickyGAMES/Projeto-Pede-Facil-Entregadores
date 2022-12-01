@@ -73,13 +73,7 @@ public class PushNotificationService extends Service {
 
                     if(location == null){
 
-                        Toast.makeText(PushNotificationService.this, "O seu GPS está desativado! Por favor, ative o GPS para conseguir usar o Arbor Amorum!", Toast.LENGTH_LONG).show();
-                        Toast.makeText(PushNotificationService.this, "Clique no FAB que centraliza a localização, pós isso, volte ao aplicativo!", Toast.LENGTH_LONG).show();
-
-                        Uri uri = Uri.parse("https://www.google.pt/maps");
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                    }
+                    }else{
 
                     Geocoder geocoder = new Geocoder(PushNotificationService.this);
                     try {
@@ -105,10 +99,10 @@ public class PushNotificationService extends Service {
 
                     } catch (Exception e) {
                         System.out.println("Não foi possivel encontrar sua localização!" + e);
-                    }
+                 }
                 }
-            });
+              }
+          });
         }
     }
-
 }
