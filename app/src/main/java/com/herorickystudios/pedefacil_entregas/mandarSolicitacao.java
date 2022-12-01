@@ -2,11 +2,8 @@ package com.herorickystudios.pedefacil_entregas;
 
 //Programado por HeroRickyGames
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,13 +13,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
@@ -32,8 +33,8 @@ import java.util.Locale;
 public class mandarSolicitacao extends AppCompatActivity {
 
     Double latitude, longitude, distance;
-    private String lat, log;
-
+    private String lat, log, UID, latDb, longDB;
+    private FirebaseFirestore usersDb;
     EditText editNomeProduto, editLocalização;
     TextView textDistancia, textPreço;
     RadioGroup radioSimouNao;
@@ -57,81 +58,93 @@ public class mandarSolicitacao extends AppCompatActivity {
         setTitle("Adicionar Item");
 
         updateGPS();
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UID = user.getUid();
+
+        usersDb = FirebaseFirestore.getInstance();
+
+
+        DocumentReference LojaDocument =  usersDb.collection("Loja").document(user.getUid());
+
+        LojaDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+
+                if(document.exists()){
+
+
+                    latDb = document.getString("Latitude");
+                    longDB = document.getString("Longitude");
+
+                }
+            }
+        });
+
     }
     public void btn(View view){
 
     }
 
-
     private void updateGPS() {
-        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-
-                    if(location == null){
-
-                    }else{
-                        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-                        String result = null;
-
-                        buttonCalcularDistancia.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if(editLocalização.getText().toString().equals("")) {
-
-                                    Toast.makeText(mandarSolicitacao.this, "Preencha o campo de Localização!", Toast.LENGTH_SHORT).show();
-
-                                }else{
-                               try {
-                                    List addressList = geocoder.getFromLocationName(editLocalização.getText().toString(), 1);
-                                    if (addressList != null && addressList.size() > 0) {
-                                        Address address = (Address) addressList.get(0);
-                                        StringBuilder sb = new StringBuilder();
-
-                                        sb.append(address.getLatitude()).append("\n");
-                                        sb.append(address.getLongitude()).append("\n");
-
-                                        //Reconverte para Lat e long
-
-                                        lat = String.valueOf(address.getLatitude());
-                                        log = String.valueOf(address.getLongitude());
-                                        System.out.println("Em Latitude e longitude " + lat + " " +  log);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-
-                                Double late = Double.valueOf(lat);
-                                Double loge = Double.valueOf(log);
 
 
-                                System.out.println("LOCALIZAÇÃO EXATA EM CODIGO: " + latitude + longitude);
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        String result = null;
 
-                                LatLng inicial = new LatLng(latitude, longitude);
-                                LatLng endpoint = new LatLng(late, loge);
+        buttonCalcularDistancia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(editLocalização.getText().toString().equals("")) {
 
-                                distance = SphericalUtil.computeDistanceBetween(inicial, endpoint);
+                    Toast.makeText(mandarSolicitacao.this, "Preencha o campo de Localização!", Toast.LENGTH_SHORT).show();
 
+                }else{
+                    try {
+                        List addressList = geocoder.getFromLocationName(editLocalização.getText().toString(), 1);
+                        if (addressList != null && addressList.size() > 0) {
+                            Address address = (Address) addressList.get(0);
+                            StringBuilder sb = new StringBuilder();
 
-                                //Calcula a distancia de um ponto a para um ponto b com o LatLng
-                                Toast.makeText(mandarSolicitacao.this, "A distancia é  \n " + String.format("%.2f", distance / 1000) + "km", Toast.LENGTH_SHORT).show();
+                            sb.append(address.getLatitude()).append("\n");
+                            sb.append(address.getLongitude()).append("\n");
 
-                                textDistancia.setText("Distancia do estabelecimento até o local: " + String.format("%.2f", distance / 1000) + "km");
+                            //Reconverte para Lat e long
 
-                                System.out.println("Distancia: " + distance);
-                            }
-                           }
-                        });
+                            lat = String.valueOf(address.getLatitude());
+                            log = String.valueOf(address.getLongitude());
+                            System.out.println("Em Latitude e longitude " + lat + " " +  log);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+                    latitude = Double.valueOf(latDb);
+                    longitude = Double.valueOf(longDB);
+
+                    Double late = Double.valueOf(lat);
+                    Double loge = Double.valueOf(log);
+
+
+                    System.out.println("LOCALIZAÇÃO EXATA EM CODIGO: " + latitude + longitude);
+
+                    LatLng inicial = new LatLng(latitude, longitude);
+                    LatLng endpoint = new LatLng(late, loge);
+
+                    distance = SphericalUtil.computeDistanceBetween(inicial, endpoint);
+
+
+                    //Calcula a distancia de um ponto a para um ponto b com o LatLng
+                    Toast.makeText(mandarSolicitacao.this, "A distancia é  \n " + String.format("%.2f", distance / 1000) + "km", Toast.LENGTH_SHORT).show();
+
+                    textDistancia.setText("Distancia do estabelecimento até o local: " + String.format("%.2f", distance / 1000) + "km");
+
+                    System.out.println("Distancia: " + distance);
                 }
-            });
-        }
+            }
+        });
+
     }
 }

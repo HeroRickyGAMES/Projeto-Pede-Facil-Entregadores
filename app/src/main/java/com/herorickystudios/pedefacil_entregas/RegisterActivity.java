@@ -2,10 +2,6 @@ package com.herorickystudios.pedefacil_entregas;
 
 //Programado por HeroRickyGames
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +16,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -40,7 +40,7 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText editNome, editIdade, editCPF, editEmail, editPIX, editSenha;
-    String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType, localização;
+    String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType, localização, latitude, longitude;
     RadioGroup radioAccType, radioPixType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
     int selectIDType, selectIDPIXType;
@@ -138,6 +138,8 @@ public class RegisterActivity extends AppCompatActivity {
                 user.put("PIX", PIX);
                 user.put("Tipo de conta", typeACC);
                 user.put("Metodo de PIX", idPIXType);
+                user.put("Latitude", latitude);
+                user.put("Longitude", longitude);
 
                 System.out.println("String" + getUID);
 
@@ -217,6 +219,9 @@ public class RegisterActivity extends AppCompatActivity {
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
+
+                    latitude = String.valueOf(location.getLatitude());
+                    longitude = String.valueOf(location.getLongitude());
 
                     Geocoder geocoder = new Geocoder(RegisterActivity.this);
                     try {
