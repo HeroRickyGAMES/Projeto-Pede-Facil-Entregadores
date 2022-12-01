@@ -7,7 +7,7 @@
     tools:context=".mandarSolicitacao">
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/editNomeProduto"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/editLocalização"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -34,10 +34,10 @@
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/editNomeProduto" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textPreço"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -45,7 +45,7 @@
         android:text="Preço: "
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioSimouNao" />
 
     <TextView
         android:id="@+id/textView5"
@@ -58,10 +58,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintTop_toBottomOf="@+id/textDistancia" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioSimouNao"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -72,13 +72,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioSim"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sim" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioNao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Não" />
@@ -96,6 +96,31 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textPreço" />
+
+    <TextView
+        android:id="@+id/textDistancia"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Distancia do estabelecimento até o local: "
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCalcularDistancia" />
+
+    <Button
+        android:id="@+id/buttonCalcularDistancia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Calcular distancia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editLocalização" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
