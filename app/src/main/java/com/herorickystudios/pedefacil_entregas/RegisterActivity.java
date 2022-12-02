@@ -131,18 +131,24 @@ public class RegisterActivity extends AppCompatActivity {
                         try {
                             List addressList = geocoder.getFromLocationName(editEnderecoLoja.getText().toString(), 1);
                             if (addressList != null && addressList.size() > 0) {
-                                Address address = (Address) addressList.get(0);
-                                StringBuilder sb = new StringBuilder();
 
-                                sb.append(address.getLatitude()).append("\n");
-                                sb.append(address.getLongitude()).append("\n");
+                                if(editEnderecoLoja.getText().toString().equals(null)){
+                                    Toast.makeText(RegisterActivity.this, "Por favor, preencha o campo de endereço.", Toast.LENGTH_SHORT).show();
+                                }else{
 
-                                //Reconverte para Lat e long
+                                    Address address = (Address) addressList.get(0);
+                                    StringBuilder sb = new StringBuilder();
 
-                                latitude = String.valueOf(address.getLatitude());
-                                longitude = String.valueOf(address.getLongitude());
+                                    sb.append(address.getLatitude()).append("\n");
+                                    sb.append(address.getLongitude()).append("\n");
 
-                                System.out.println("Em Latitude e longitude " + latitude + " " +  longitude);
+                                    //Reconverte para Lat e long
+
+                                    latitude = String.valueOf(address.getLatitude());
+                                    longitude = String.valueOf(address.getLongitude());
+
+                                    System.out.println("Em Latitude e longitude " + latitude + " " +  longitude);
+                                }
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
