@@ -36,6 +36,11 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
         cardsEntregas users = list.get(position);
 
         holder.textTitulo.setText(users.getTitulo());
+        holder.textnomeL.setText(users.getNome());
+        holder.textlocalL.setText(users.getLocal());
+        holder.textendereçoL.setText(users.getLocalentrega());
+        holder.textDistanciadvc.setText(users.getTextDistanciadvc());
+        holder.textPreco.setText(users.getPreco());
 
     }
 
@@ -46,7 +51,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView name, textTitulo;
+        TextView textTitulo, textnomeL, textlocalL, textendereçoL, textDistanciadvc, textPreco;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,6 +59,11 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
             itemView.setOnClickListener(this);
 
             textTitulo = itemView.findViewById(R.id.textTitulo);
+            textnomeL = itemView.findViewById(R.id.textProduto);
+            textlocalL = itemView.findViewById(R.id.textLocal);
+            textendereçoL = itemView.findViewById(R.id.textLocalEntrega);
+            textDistanciadvc = itemView.findViewById(R.id.textDistanciadvc);
+            textPreco = itemView.findViewById(R.id.textPreco);
 
             //st = mensage.getText().toString();
 
@@ -64,7 +74,4 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
         }
     }
-
-
-
 }

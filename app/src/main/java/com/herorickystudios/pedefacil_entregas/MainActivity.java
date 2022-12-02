@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -72,11 +74,28 @@ public class MainActivity extends AppCompatActivity {
                     setTitle("Lista de itens para entrega proximos a você");
                     nomeUser = document.getString("nameCompleteUser");
 
-                    chaatTxt = new cardsEntregas(nomeUser);
+                    usersDb.collection("Solicitacoes-Entregas").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                    list.add(chaatTxt);
+                            for(DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()){
 
-                    adapter.notifyDataSetChanged();
+
+                                String lojaName = dataSnapshot.get("Pertence a").toString();
+                                String productName = dataSnapshot.get("Nome do produto").toString();
+                                String lojaLocal = dataSnapshot.get("Localização").toString();
+                                String entregaLocal = dataSnapshot.get("Local de Entrega").toString();
+                                String preco = dataSnapshot.get("Preço").toString();
+
+                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "Distancia de você : 0.0km" , "R$: " + preco);
+
+                                list.add(chaatTxt);
+
+                                adapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    });
                 }
             }
         });
