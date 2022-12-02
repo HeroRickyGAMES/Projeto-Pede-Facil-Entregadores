@@ -132,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
                             List addressList = geocoder.getFromLocationName(editEnderecoLoja.getText().toString(), 1);
                             if (addressList != null && addressList.size() > 0) {
 
-                                if(editEnderecoLoja.getText().toString().equals(null)){
+                                if(editEnderecoLoja.getText().toString().equals("")){
                                     Toast.makeText(RegisterActivity.this, "Por favor, preencha o campo de endereço.", Toast.LENGTH_SHORT).show();
                                 }else{
 
