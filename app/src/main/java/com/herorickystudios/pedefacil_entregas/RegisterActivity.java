@@ -33,13 +33,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText editNome, editIdade, editCPF, editEmail, editPIX, editSenha;
+    EditText editNome, editIdade, editCPF, editEmail, editPIX, editSenha, editEnderecoLoja;
     String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType, localização, latitude, longitude;
     RadioGroup radioAccType, radioPixType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
@@ -66,10 +68,13 @@ public class RegisterActivity extends AppCompatActivity {
         editPIX = findViewById(R.id.editPIXcadastro);
         radioAccType = findViewById(R.id.radioAccType);
         radioPixType = findViewById(R.id.radioPixType);
+        editEnderecoLoja = findViewById(R.id.editEnderecoLoja);
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(1000 * 30);
         locationRequest.setFastestInterval(1000 * 5);
+
+        editEnderecoLoja.setVisibility(View.INVISIBLE);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
@@ -92,14 +97,6 @@ public class RegisterActivity extends AppCompatActivity {
         radioTypeAcc = (RadioButton) findViewById(selectIDType);
         radioIDPIXType = (RadioButton) findViewById(selectIDPIXType);
 
-        if(radioTypeAcc.getText().equals("null")){
-            return;
-        }
-
-        if(radioIDPIXType.getText().equals("null")){
-            return;
-        }
-
         AccType = radioTypeAcc.getText().toString();
         idPIXType = radioIDPIXType.getText().toString();
 
@@ -112,80 +109,114 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if(editNome.getText().toString().equals("")
-        && editIdade.getText().toString().equals("")
-        && editCPF.getText().toString().equals("")
-        && editEmail.getText().toString().equals("")
-        && editSenha.getText().toString().equals("")
-        && editPIX.getText().toString().equals(""))
+                && editIdade.getText().toString().equals("")
+                && editCPF.getText().toString().equals("")
+                && editEmail.getText().toString().equals("")
+                && editSenha.getText().toString().equals("")
+                && editPIX.getText().toString().equals(""))
         {
             Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
 
         }else{
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
 
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(typeACC.equals("Loja")){
+                        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                getUID = FirebaseAuth.getInstance().getUid();
+                        localização = editEnderecoLoja.getText().toString();
 
-                Map<String, Object> user = new HashMap<>();
-                user.put("nameCompleteUser", nome);
-                user.put("idadeUser", idade);
-                user.put("CPF", CPF);
-                user.put("Email", email);
-                user.put("Localização", localização);
-                user.put("PIX", PIX);
-                user.put("Tipo de conta", typeACC);
-                user.put("Metodo de PIX", idPIXType);
-                user.put("Latitude", latitude);
-                user.put("Longitude", longitude);
+                        try {
+                            List addressList = geocoder.getFromLocationName(editEnderecoLoja.getText().toString(), 1);
+                            if (addressList != null && addressList.size() > 0) {
+                                Address address = (Address) addressList.get(0);
+                                StringBuilder sb = new StringBuilder();
 
-                System.out.println("String" + getUID);
+                                sb.append(address.getLatitude()).append("\n");
+                                sb.append(address.getLongitude()).append("\n");
 
-                DocumentReference setDB = referencia.collection(typeACC).document(getUID);
+                                //Reconverte para Lat e long
 
-                setDB.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
+                                latitude = String.valueOf(address.getLatitude());
+                                longitude = String.valueOf(address.getLongitude());
 
+                                System.out.println("Em Latitude e longitude " + latitude + " " +  longitude);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Map<String, Object> errorDb = new HashMap<>();
-                        errorDb.put("CadastroError", "Erro no Cadastro: "+ e);
-                        DocumentReference setDB = referencia.collection("ErrorDB").document(getUID);
 
-                        System.out.println("Ocorreu um erro: "+ e);
-                    }
-                });
+                    getUID = FirebaseAuth.getInstance().getUid();
 
-            //Starta a Activity
-            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-            startActivity(intent);
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("nameCompleteUser", nome);
+                    user.put("idadeUser", idade);
+                    user.put("CPF", CPF);
+                    user.put("Email", email);
+                    user.put("Localização", localização);
+                    user.put("PIX", PIX);
+                    user.put("Tipo de conta", typeACC);
+                    user.put("Metodo de PIX", idPIXType);
+                    user.put("Latitude", latitude);
+                    user.put("Longitude", longitude);
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                    System.out.println("String" + getUID);
 
-                Map<String, Object> errorC = new HashMap<>();
-                errorC.put("CadastroError", "Erro no Cadastro: "+ e);
-                DocumentReference setDB = referencia.collection("ErrorDB").document(getUID);
-                
-                System.out.println("Ocorreu um erro: "+ e);
-            }
-        });
+                    DocumentReference setDB = referencia.collection(typeACC).document(getUID);
+
+                    setDB.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Map<String, Object> errorDb = new HashMap<>();
+                            errorDb.put("CadastroError", "Erro no Cadastro: "+ e);
+                            DocumentReference setDB = referencia.collection("ErrorDB").document(getUID);
+
+                            System.out.println("Ocorreu um erro: "+ e);
+                        }
+                    });
+
+                    //Starta a Activity
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    Map<String, Object> errorC = new HashMap<>();
+                    errorC.put("CadastroError", "Erro no Cadastro: "+ e);
+                    DocumentReference setDB = referencia.collection("ErrorDB").document(getUID);
+
+                    System.out.println("Ocorreu um erro: "+ e);
+                }
+            });
         }
     }
     public void hitnome(View view){
+
+        typeACC = "Entregador";
+
         editNome.setHint("Seu nome completo");
         editCPF.setHint("CPF");
     }
     public void hintloja(View view){
+
+        typeACC = "Loja";
+
         editNome.setHint("Razão Social / Nome da Loja");
         editCPF.setHint("CNPJ");
+        editEnderecoLoja.setVisibility(View.VISIBLE);
+
+
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
