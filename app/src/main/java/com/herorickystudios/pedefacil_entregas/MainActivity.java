@@ -8,6 +8,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,26 +20,38 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
     String UID;
     private String nomeUser;
-
+    private RecyclerView viewEntregas;
+    private RecyclerView.Adapter entregasAdapter;
+    entregasAdapter adapter;
+    private RecyclerView.LayoutManager entregasLayoutManager;
+    ArrayList<cardsEntregas> list;
     FloatingActionButton fabLojaAdd;
-
+    cardsEntregas chaatTxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        viewEntregas = findViewById(R.id.listEntregas);
 
         startService(new Intent(getBaseContext(), PushNotificationService.class));
 
         fabLojaAdd = findViewById(R.id.fabLojaAdd);
 
         fabLojaAdd.hide();
-
+        //Adições para RecycleView
+        list = new ArrayList<cardsEntregas>();
+        adapter = new entregasAdapter(this, list);
+        viewEntregas.setAdapter(adapter);
+        viewEntregas.setLayoutManager(new LinearLayoutManager(this));
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -57,9 +71,17 @@ public class MainActivity extends AppCompatActivity {
                 if(document.exists()){
                     setTitle("Lista de itens para entrega proximos a você");
                     nomeUser = document.getString("nameCompleteUser");
+
+                    chaatTxt = new cardsEntregas(nomeUser);
+
+                    list.add(chaatTxt);
+
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
+
+
 
         LojaDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
