@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +41,7 @@ public class mandarSolicitacao extends AppCompatActivity {
     EditText editNomeProduto, editLocalização;
     TextView textDistancia, textPreço;
     Button buttonCalcularDistancia;
-    Integer calculodePreco;
+    Float calculodePreco;
     int selectIDSim, selectIDNao;
     boolean sim, nao;
     RadioButton button;
@@ -175,15 +176,17 @@ public class mandarSolicitacao extends AppCompatActivity {
 
                 if(simounao.equals("Sim")){
 
-                    calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10 + 5;
+                    calculodePreco = Float.parseFloat(kms) * Float.parseFloat(calculoporKm) / 10 + 5;
 
                 }else{
 
-                    calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10;
+                    calculodePreco = Float.parseFloat(kms) * Float.parseFloat(calculoporKm) / 10;
 
                 }
 
-                textPreço.setText("Preço: R$ " + calculodePreco + ",00");
+                DecimalFormat formatador = new DecimalFormat("0.00");
+
+                textPreço.setText("Preço: R$ " + formatador.format(calculodePreco));
 
                 System.out.println("Distancia: " + calculodePreco);
 
@@ -261,15 +264,17 @@ public class mandarSolicitacao extends AppCompatActivity {
 
                     if(simounao.equals("Sim")){
 
-                        calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10 + 5;
+                        calculodePreco = Float.parseFloat(kms) * Float.parseFloat(calculoporKm) / 10 + 5;
 
                     }else{
 
-                        calculodePreco = Integer.parseInt(kms) * Integer.parseInt(calculoporKm) / 10;
+                        calculodePreco = Float.parseFloat(kms) * Float.parseFloat(calculoporKm) / 10;
 
                     }
 
-                    textPreço.setText("Preço: R$ " + calculodePreco + ",00");
+                    DecimalFormat formatador = new DecimalFormat("0.00");
+
+                    textPreço.setText("Preço: R$ " + formatador.format(calculodePreco));
 
                     System.out.println("Distancia: " + calculodePreco);
 
