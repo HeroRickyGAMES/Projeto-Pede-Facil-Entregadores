@@ -118,77 +118,32 @@
         app:layout_constraintTop_toBottomOf="@+id/editCPF" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+        android:id="@+id/textStripeAviso"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Selecione o seu tipo de PIX"
+        android:text="Para o uso do aplicaitvo, é necessario fazer o registro na plataforma Stripe"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editEmailr" />
 
-    <RadioGroup
-        android:id="@+id/radioPixType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
-
-        <RadioButton
-            android:id="@+id/radioEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textSize="20sp" />
-
-        <RadioButton
-            android:id="@+id/radioTelefone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Telefone"
-            android:textSize="20sp" />
-
-        <RadioButton
-            android:id="@+id/radioCPF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CPF"
-            android:textSize="20sp" />
-
-        <RadioButton
-            android:id="@+id/radioRamdom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Aleatorio"
-            android:textSize="16sp" />
-    </RadioGroup>
-
-    <EditText
-        android:id="@+id/editPIXcadastro"
+    <TextView
+        android:id="@+id/textStripeSaibaMais"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="Digite seu PIX"
-        android:inputType="textPersonName"
+        android:text="Clique aqui para saber mais"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioPixType" />
+        app:layout_constraintTop_toBottomOf="@+id/textStripeAviso" />
 
     <Button
         android:id="@+id/button2"
@@ -218,7 +173,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editPIXcadastro" />
+        app:layout_constraintTop_toBottomOf="@+id/editChaveSecreta" />
 
     <EditText
         android:id="@+id/editEnderecoLoja"
@@ -235,6 +190,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editSenhar" />
+
+    <EditText
+        android:id="@+id/editChavePublica"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Sua Chave publicável"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textStripeSaibaMais" />
+
+    <EditText
+        android:id="@+id/editChaveSecreta"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Sua Chave secreta"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editChavePublica" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

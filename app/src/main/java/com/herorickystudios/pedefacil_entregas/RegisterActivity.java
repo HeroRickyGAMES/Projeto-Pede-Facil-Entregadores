@@ -3,6 +3,7 @@ package com.herorickystudios.pedefacil_entregas;
 //Programado por HeroRickyGames
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -15,9 +16,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -41,12 +44,13 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText editNome, editIdade, editCPF, editEmail, editPIX, editSenha, editEnderecoLoja;
-    String nome, idade, CPF, email, PIX, senha, typeACC, getUID, AccType, idPIXType, localização, latitude, longitude;
-    RadioGroup radioAccType, radioPixType;
+    EditText editNome, editIdade, editCPF, editEmail, editChavePublica, editChaveSecreta, editSenha, editEnderecoLoja;
+    TextView textStripeAviso, textStripeSaibaMais;
+    String nome, idade, CPF, email, senha, typeACC, getUID, AccType, localização, latitude, longitude, secretKey, publicKey;
+    RadioGroup radioAccType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
-    int selectIDType, selectIDPIXType;
-    RadioButton radioTypeAcc, radioIDPIXType;
+    int selectIDType;
+    RadioButton radioTypeAcc;
 
     private static final int PERMISSION_FINE_LOCATION = 99;
     LocationRequest locationRequest;
@@ -65,10 +69,12 @@ public class RegisterActivity extends AppCompatActivity {
         editCPF = findViewById(R.id.editCPF);
         editEmail = findViewById(R.id.editEmailr);
         editSenha = findViewById(R.id.editSenhar);
-        editPIX = findViewById(R.id.editPIXcadastro);
         radioAccType = findViewById(R.id.radioAccType);
-        radioPixType = findViewById(R.id.radioPixType);
         editEnderecoLoja = findViewById(R.id.editEnderecoLoja);
+        editChavePublica = findViewById(R.id.editChavePublica);
+        editChaveSecreta = findViewById(R.id.editChaveSecreta);
+        textStripeAviso = findViewById(R.id.textStripeAviso);
+        textStripeSaibaMais = findViewById(R.id.textStripeSaibaMais);
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(1000 * 30);
@@ -76,7 +82,42 @@ public class RegisterActivity extends AppCompatActivity {
 
         editEnderecoLoja.setVisibility(View.INVISIBLE);
 
+        editChaveSecreta.setVisibility(View.INVISIBLE);
+        editChavePublica.setVisibility(View.INVISIBLE);
+        textStripeSaibaMais.setVisibility(View.INVISIBLE);
+        textStripeAviso.setVisibility(View.INVISIBLE);
+
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        textStripeSaibaMais.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(RegisterActivity.this)
+                        .setTitle("O que é Stripe?")
+                        .setMessage("Stripe é uma plataforma de pagamentos que possibilita o desenvolvedor, o cliente e o entregador terem uma experiencia de pagamento muito simples! Para entregadores basta criar a sua conta, ativar o metodo de pagamento, preencher suas informações pessoais, e colar a Chave Secreta e a Chave Publica!")
+                        .setCancelable(false)
+                        .setNegativeButton("Saiba mais sobre a Stripe", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String url = "https://stripe.com/br";
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+                            }
+                        })
+                        .setPositiveButton("Registre-se na plataforma Stripe", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                String url = "https://dashboard.stripe.com/register";
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                startActivity(i);
+
+                            }
+                        }).show();
+            }
+        });
 
         updateGPS();
     }
@@ -88,17 +129,15 @@ public class RegisterActivity extends AppCompatActivity {
         CPF = editCPF.getText().toString();
         email = editEmail.getText().toString();
         senha = editSenha.getText().toString();
-        PIX = editPIX.getText().toString();
+        secretKey = editChaveSecreta.getText().toString();
+        publicKey = editChavePublica.getText().toString();
 
 
         selectIDType = radioAccType.getCheckedRadioButtonId();
-        selectIDPIXType = radioPixType.getCheckedRadioButtonId();
 
         radioTypeAcc = (RadioButton) findViewById(selectIDType);
-        radioIDPIXType = (RadioButton) findViewById(selectIDPIXType);
 
         AccType = radioTypeAcc.getText().toString();
-        idPIXType = radioIDPIXType.getText().toString();
 
         if(AccType.equals("Sou um Entregador")){
 
@@ -109,11 +148,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if(editNome.getText().toString().equals("")
-                && editIdade.getText().toString().equals("")
-                && editCPF.getText().toString().equals("")
-                && editEmail.getText().toString().equals("")
-                && editSenha.getText().toString().equals("")
-                && editPIX.getText().toString().equals(""))
+                || editIdade.getText().toString().equals("")
+                || editCPF.getText().toString().equals("")
+                || editEmail.getText().toString().equals("")
+                || editSenha.getText().toString().equals(""))
         {
             Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
 
@@ -163,13 +201,26 @@ public class RegisterActivity extends AppCompatActivity {
                     user.put("CPF", CPF);
                     user.put("Email", email);
                     user.put("Localização", localização);
-                    user.put("PIX", PIX);
                     user.put("Tipo de conta", typeACC);
-                    user.put("Metodo de PIX", idPIXType);
                     user.put("Latitude", latitude);
                     user.put("Longitude", longitude);
 
                     System.out.println("String" + getUID);
+
+                    if(typeACC.equals("Entregador")){
+                        if(editChaveSecreta.getText().toString().equals("") || editChavePublica.getText().toString().equals("")){
+
+                            Toast.makeText(RegisterActivity.this, "Preencha o campo das chaves!", Toast.LENGTH_SHORT).show();
+
+                        }else{
+
+                            user.put("publicKey", publicKey);
+                            user.put("secretKey", secretKey);
+
+                        }
+
+
+                    }
 
                     DocumentReference setDB = referencia.collection(typeACC).document(getUID);
 
@@ -213,6 +264,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         editNome.setHint("Seu nome completo");
         editCPF.setHint("CPF");
+
+        editChaveSecreta.setVisibility(View.VISIBLE);
+        editChavePublica.setVisibility(View.VISIBLE);
+
+        editEnderecoLoja.setVisibility(View.INVISIBLE);
+
+        textStripeSaibaMais.setVisibility(View.VISIBLE);
+        textStripeAviso.setVisibility(View.VISIBLE);
     }
     public void hintloja(View view){
 
@@ -222,7 +281,11 @@ public class RegisterActivity extends AppCompatActivity {
         editCPF.setHint("CNPJ");
         editEnderecoLoja.setVisibility(View.VISIBLE);
 
+        editChaveSecreta.setVisibility(View.INVISIBLE);
+        editChavePublica.setVisibility(View.INVISIBLE);
 
+        textStripeSaibaMais.setVisibility(View.INVISIBLE);
+        textStripeAviso.setVisibility(View.INVISIBLE);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

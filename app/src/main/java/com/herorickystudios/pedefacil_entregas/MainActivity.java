@@ -81,11 +81,12 @@ public class MainActivity extends AppCompatActivity {
                 if(document.exists()){
                     setTitle("Lista de itens para entrega proximos a você");
                     nomeUser = document.getString("nameCompleteUser");
-
+                    userLatitude = document.getString("Latitude");
+                    userLongitude = document.getString("Longitude");
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                    usersDb.collection("Solicitacoes-Entregas").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    usersDb.collection("Solicitacoes-Entregas").whereEqualTo("statusDoProduto", "Ativo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
@@ -99,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
                                 statusDoProduto = dataSnapshot.get("statusDoProduto").toString();
                                 entreguePor = dataSnapshot.get("entreguePor").toString();
                                 uidEntregador = dataSnapshot.get("uidEntregador").toString();
-                                userLatitude = dataSnapshot.get("Latitude").toString();
-                                userLongitude = dataSnapshot.get("Longitude").toString();
 
                                 try {
                                     List addressList = geocoder.getFromLocationName(lojaLocal, 1);
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                     fabLojaAdd.show();
                     setTitle("Itens adicionados por sua loja");
                     nomeUser = document.getString("nameCompleteUser");
-                    
+
                     usersDb.collection("Solicitacoes-Entregas").whereEqualTo("Pertence a", nomeUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
