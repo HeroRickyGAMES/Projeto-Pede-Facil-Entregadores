@@ -88,37 +88,6 @@ public class RegisterActivity extends AppCompatActivity {
         textStripeAviso.setVisibility(View.INVISIBLE);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        textStripeSaibaMais.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(RegisterActivity.this)
-                        .setTitle("O que é Stripe?")
-                        .setMessage("Stripe é uma plataforma de pagamentos que possibilita o desenvolvedor, o cliente e o entregador terem uma experiencia de pagamento muito simples! Para entregadores basta criar a sua conta, ativar o metodo de pagamento, preencher suas informações pessoais, e colar a Chave Secreta e a Chave Publica!")
-                        .setCancelable(false)
-                        .setNegativeButton("Saiba mais sobre a Stripe", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String url = "https://stripe.com/br";
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(url));
-                                startActivity(i);
-                            }
-                        })
-                        .setPositiveButton("Registre-se na plataforma Stripe", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                String url = "https://dashboard.stripe.com/register";
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(url));
-                                startActivity(i);
-
-                            }
-                        }).show();
-            }
-        });
-
         updateGPS();
     }
 
@@ -343,5 +312,33 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public void saibamais(View view){
+
+        new AlertDialog.Builder(RegisterActivity.this)
+                .setTitle("O que é Stripe?")
+                .setMessage("Stripe é uma plataforma de pagamentos que possibilita o desenvolvedor, o cliente e o entregador terem uma experiencia de pagamento muito simples! Para entregadores basta criar a sua conta, ativar o metodo de pagamento, preencher suas informações pessoais, e colar a Chave Secreta e a Chave Publica!")
+                .setCancelable(true)
+                .setNegativeButton("Saiba mais sobre a Stripe", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String url = "https://stripe.com/br";
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                    }
+                })
+                .setPositiveButton("Registre-se na plataforma Stripe", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String url = "https://dashboard.stripe.com/register";
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+
+                    }
+                }).show();
     }
 }
