@@ -291,6 +291,8 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("Nome do produto", editNomeProduto.getText().toString());
         data.put("Local de Entrega", editLocalização.getText().toString());
         data.put("Distancia", String.format("%.2f", distance / 1000) + "km");
+        data.put("statusDoProduto", "Ativo");
+        data.put("entreguePor", "");
 
 
         if(simounao.equals("Sim")){

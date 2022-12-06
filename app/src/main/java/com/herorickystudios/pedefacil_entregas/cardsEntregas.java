@@ -10,14 +10,44 @@ public class cardsEntregas {
     private String localentrega;
     private String textDistanciadvc;
     private String preco;
+    private String estaAtivo;
+    private String entreguePor;
+    private String uidEntregaor;
 
-    public cardsEntregas(String titulo, String nome , String local, String localentrega, String textDistanciadvc, String preco){
+    public cardsEntregas(String titulo, String nome , String local, String localentrega, String textDistanciadvc, String preco, String estaAtivo, String entreguePor, String uidEntregaor){
         this.titulo = String.valueOf(titulo);
         this.nome = String.valueOf(nome);
         this.local = String.valueOf(local);
         this.localentrega = String.valueOf(localentrega);
         this.textDistanciadvc = String.valueOf(textDistanciadvc);
         this.preco = String.valueOf(preco);
+        this.estaAtivo = String.valueOf(estaAtivo);
+        this.entreguePor = String.valueOf(entreguePor);
+        this.uidEntregaor = String.valueOf(uidEntregaor);
+    }
+
+    public String getUidEntregaor() {
+        return uidEntregaor;
+    }
+
+    public void setUidEntregaor(String uidEntregaor) {
+        this.uidEntregaor = uidEntregaor;
+    }
+
+    public String getEntreguePor() {
+        return entreguePor;
+    }
+
+    public void setEntreguePor(String entreguePor) {
+        this.entreguePor = entreguePor;
+    }
+
+    public String getEstaAtivo() {
+        return estaAtivo;
+    }
+
+    public void setEstaAtivo(String estaAtivo) {
+        this.estaAtivo = estaAtivo;
     }
 
     public String getPreco() {

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
     String UID;
-    private String nomeUser;
+    private String nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
     entregasAdapter adapter;
@@ -81,13 +81,16 @@ public class MainActivity extends AppCompatActivity {
                             for(DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()){
 
 
-                                String lojaName = dataSnapshot.get("Pertence a").toString();
-                                String productName = dataSnapshot.get("Nome do produto").toString();
-                                String lojaLocal = dataSnapshot.get("Localização").toString();
-                                String entregaLocal = dataSnapshot.get("Local de Entrega").toString();
-                                String preco = dataSnapshot.get("Preço").toString();
+                                lojaName = dataSnapshot.get("Pertence a").toString();
+                                productName = dataSnapshot.get("Nome do produto").toString();
+                                lojaLocal = dataSnapshot.get("Localização").toString();
+                                entregaLocal = dataSnapshot.get("Local de Entrega").toString();
+                                preco = dataSnapshot.get("Preço").toString();
+                                statusDoProduto = dataSnapshot.get("statusDoProduto").toString();
+                                entreguePor = dataSnapshot.get("entreguePor").toString();
+                                uidEntregador = dataSnapshot.get("uidEntregador").toString();
 
-                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "Distancia de você : 0.0km" , "R$: " + preco);
+                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "Distancia de você : 0.0km" , "R$: " + preco, statusDoProduto, entreguePor, uidEntregador);
 
                                 list.add(chaatTxt);
 

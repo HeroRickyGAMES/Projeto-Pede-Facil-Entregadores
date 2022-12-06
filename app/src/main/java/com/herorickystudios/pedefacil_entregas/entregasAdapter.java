@@ -41,7 +41,9 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
         holder.textendereçoL.setText(users.getLocalentrega());
         holder.textDistanciadvc.setText(users.getTextDistanciadvc());
         holder.textPreco.setText(users.getPreco());
-
+        holder.textestaAtivo.setText(users.getEstaAtivo());
+        holder.textEntreguePor.setText(users.getEntreguePor());
+        holder.textuidEntregaor.setText(users.getUidEntregaor());
     }
 
     @Override
@@ -51,7 +53,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView textTitulo, textnomeL, textlocalL, textendereçoL, textDistanciadvc, textPreco;
+        TextView textTitulo, textnomeL, textlocalL, textendereçoL, textDistanciadvc, textPreco, textestaAtivo, textEntreguePor, textuidEntregaor;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +66,9 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
             textendereçoL = itemView.findViewById(R.id.textLocalEntrega);
             textDistanciadvc = itemView.findViewById(R.id.textDistanciadvc);
             textPreco = itemView.findViewById(R.id.textPreco);
+            textestaAtivo = itemView.findViewById(R.id.textestaAtivo);
+            textEntreguePor = itemView.findViewById(R.id.textEntreguePor);
+            textuidEntregaor = itemView.findViewById(R.id.textuidEntregaor);
 
             //st = mensage.getText().toString();
 
