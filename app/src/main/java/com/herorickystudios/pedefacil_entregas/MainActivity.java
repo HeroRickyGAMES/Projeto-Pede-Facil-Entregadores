@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
-    String UID;
-    private String nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador;
+    private String UID, nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador;
     private double latitude, longitude, distance;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
@@ -45,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<cardsEntregas> list;
     FloatingActionButton fabLojaAdd;
     cardsEntregas chaatTxt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,5 +191,11 @@ public class MainActivity extends AppCompatActivity {
         //Manda para a nova Activity
         Intent intent = new Intent(this, mandarSolicitacao.class);
         startActivity(intent);
+    }
+    public void gotoSettings(View view){
+
+        Intent intent = new Intent(this, configActivity.class);
+        startActivity(intent);
+
     }
 }
