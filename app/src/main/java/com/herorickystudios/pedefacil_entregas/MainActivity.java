@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
     String UID;
-    private String nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude;
+    private String nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador;
     private double latitude, longitude, distance;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
@@ -82,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
                     setTitle("Lista de itens para entrega proximos a você");
                     nomeUser = document.getString("nameCompleteUser");
 
-                    userLatitude = document.getString("Latitude");
-                    userLongitude = document.getString("Longitude");
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
@@ -101,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
                                 statusDoProduto = dataSnapshot.get("statusDoProduto").toString();
                                 entreguePor = dataSnapshot.get("entreguePor").toString();
                                 uidEntregador = dataSnapshot.get("uidEntregador").toString();
-
+                                userLatitude = dataSnapshot.get("Latitude").toString();
+                                userLongitude = dataSnapshot.get("Longitude").toString();
 
                                 try {
                                     List addressList = geocoder.getFromLocationName(lojaLocal, 1);
@@ -158,6 +157,32 @@ public class MainActivity extends AppCompatActivity {
                     fabLojaAdd.show();
                     setTitle("Itens adicionados por sua loja");
                     nomeUser = document.getString("nameCompleteUser");
+                    
+                    usersDb.collection("Solicitacoes-Entregas").whereEqualTo("Pertence a", nomeUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                            for(DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()){
+
+                                lojaName = dataSnapshot.get("Pertence a").toString();
+                                productName = dataSnapshot.get("Nome do produto").toString();
+                                lojaLocal = dataSnapshot.get("Localização").toString();
+                                entregaLocal = dataSnapshot.get("Local de Entrega").toString();
+                                preco = dataSnapshot.get("Preço").toString();
+                                statusDoProduto = dataSnapshot.get("statusDoProduto").toString();
+                                entreguePor = dataSnapshot.get("entreguePor").toString();
+                                uidEntregador = dataSnapshot.get("uidEntregador").toString();
+
+
+                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "" , "R$: " + preco, statusDoProduto, entreguePor, uidEntregador);
+
+                                list.add(chaatTxt);
+
+                                adapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    });
 
                 }
             }

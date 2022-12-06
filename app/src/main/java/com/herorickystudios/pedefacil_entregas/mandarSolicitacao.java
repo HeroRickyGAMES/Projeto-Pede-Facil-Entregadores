@@ -2,6 +2,7 @@ package com.herorickystudios.pedefacil_entregas;
 
 //Programado por HeroRickyGames
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -293,6 +294,7 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("Distancia", String.format("%.2f", distance / 1000) + "km");
         data.put("statusDoProduto", "Ativo");
         data.put("entreguePor", "");
+        data.put("uidEntregador", "");
 
 
         if(simounao.equals("Sim")){
@@ -304,9 +306,12 @@ public class mandarSolicitacao extends AppCompatActivity {
             data.put("É retornavel", false);
 
         }
-
-        data.put("Preço", calculodePreco + ",00");
+        DecimalFormat formatador = new DecimalFormat("0.00");
+        data.put("Preço", formatador.format(calculodePreco));
 
         usersDb.collection("Solicitacoes-Entregas").add(data);
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
