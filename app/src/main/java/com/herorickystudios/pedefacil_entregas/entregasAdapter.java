@@ -30,7 +30,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
     Context context;
     ArrayList<cardsEntregas> list;
     private FirebaseFirestore usersDb;
-    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, localizaçãoloja, localizacaoEntregador;
+    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador;
     Double latiInt, longInt;
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
@@ -102,6 +102,48 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
             UID = user.getUid();
 
             System.out.println(UID);
+
+            DocumentReference entregaDoc =  usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+            entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                    DocumentSnapshot document = task.getResult();
+                    statusdaentrega = document.getString("statusDoProduto");
+                    entregadorNameFromEntrega = document.getString("entreguePor");
+                    uidEntregador = document.getString("uidEntregador");
+                    preco = document.getString("Preço");
+
+                    if(statusdaentrega.equals("Em Pagamento")){
+
+                        DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
+
+                        entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                                Intent intent = new Intent(context, paymentDeveloper.class);
+
+                                DocumentSnapshot document3 = task.getResult();
+
+                                publicKeyEntregador = document3.getString("publicKey");
+                                secretKeyEntregador = document3.getString("publicKey");
+
+                                intent.putExtra("Preco", preco);
+                                intent.putExtra("Entregador", entregadorNameFromEntrega);
+                                intent.putExtra("PublicKeyEntregador", publicKeyEntregador);
+                                intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
+                                intent.putExtra("UidEntregador", uidEntregador);
+                                intent.putExtra("idProduto", textProductID.getText().toString());
+                                context.startActivity(intent);
+
+                            }
+                        });
+                    }
+
+                }
+            });
 
             DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(UID);
 
