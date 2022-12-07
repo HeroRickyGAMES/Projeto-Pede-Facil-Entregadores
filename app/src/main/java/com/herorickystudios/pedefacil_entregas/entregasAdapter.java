@@ -2,6 +2,8 @@ package com.herorickystudios.pedefacil_entregas;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +30,8 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
     Context context;
     ArrayList<cardsEntregas> list;
     private FirebaseFirestore usersDb;
-    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega;
+    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, localizaçãoloja, localizacaoEntregador;
+    Double latiInt, longInt;
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
         this.context = context;
@@ -112,6 +115,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                     if(document.exists()){
 
                         entregadorName = document.get("nameCompleteUser").toString();
+                        localizacaoEntregador = document.get("Localização").toString();
 
                         System.out.println(entregadorName);
 
@@ -136,6 +140,16 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                         statusdaentrega = document2.getString("statusDoProduto");
                         entregadorNameFromEntrega = document2.getString("entreguePor");
+                        latiInt = document2.getDouble("latitude");
+                        longInt = document2.getDouble("longitude");
+                        localizaçãoloja = document2.getString("Localização");
+
+                        latitude = String.valueOf(latiInt);
+                        longitude = String.valueOf(longInt);
+
+                        System.out.println(latitude);
+                        System.out.println(longitude);
+
                         if(statusdaentrega.equals("Ativo")){
 
                         new AlertDialog.Builder(context)
@@ -161,6 +175,12 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                         DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
 
                                         setDB.update(data);
+
+// Creates an Intent that will load a map of San Francisco
+                                        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + localizaçãoloja);
+                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                        mapIntent.setPackage("com.google.android.apps.maps");
+                                        context.startActivity(mapIntent);
 
                                     }
                                 }).show();
