@@ -114,8 +114,10 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                         entregadorName = document.get("nameCompleteUser").toString();
 
                         System.out.println(entregadorName);
+
+                        entrega();
+
                     }
-                    entrega();
                 }
             });
         }
@@ -134,7 +136,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                         statusdaentrega = document2.getString("statusDoProduto");
                         entregadorNameFromEntrega = document2.getString("entreguePor");
-                        if(statusdaentrega == "Ativo"){
+                        if(statusdaentrega.equals("Ativo")){
 
                         new AlertDialog.Builder(context)
                                 .setTitle("Fazer a entrega?")
@@ -154,7 +156,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                         Map<String, Object> data = new HashMap<>();
                                         data.put("entreguePor", entregadorName);
                                         data.put("uidEntregador", UID);
-                                        data.put("statusDoProduto", "Em Entrega");
+                                        data.put("statusDoProduto", "A caminho");
 
                                         DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
 
@@ -167,16 +169,24 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                                 new AlertDialog.Builder(context)
                                         .setTitle("Você chegou?")
-                                        .setMessage("Caso você tenha chegado, clique em sim!")
+                                        .setMessage("Você chegou? Ou deseja cancelar a viagem?")
                                         .setCancelable(true)
-                                        .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                        .setNegativeButton("Cancelar viagem", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
+                                                Map<String, Object> data = new HashMap<>();
+                                                data.put("statusDoProduto", "Ativo");
+                                                data.put("uidEntregador", "");
+                                                data.put("entreguePor", "");
+
+                                                DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+                                                setDB.update(data);
 
                                             }
                                         })
-                                        .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("Cheguei", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
