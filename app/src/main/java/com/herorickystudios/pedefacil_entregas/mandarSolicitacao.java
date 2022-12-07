@@ -37,7 +37,7 @@ import java.util.Map;
 public class mandarSolicitacao extends AppCompatActivity {
 
     Double latitude, longitude, distance;
-    private String lat, log, UID, latDb, longDB, calculoporKm, simounao, autorname, autorlocale;
+    private String lat, log, UID, latDb, longDB, calculoporKm, simounao, autorname, autorlocale, id;
     private FirebaseFirestore usersDb;
     EditText editNomeProduto, editLocalização;
     TextView textDistancia, textPreço;
@@ -285,7 +285,11 @@ public class mandarSolicitacao extends AppCompatActivity {
         });
     }
     public void sandtoDB(){
+        DocumentReference doc = usersDb.collection("Solicitacoes-Entregas").document();
 
+        id =  doc.getId();
+
+        System.out.println("O UID É "+ id);
         Map<String, Object> data = new HashMap<>();
         data.put("Pertence a", autorname);
         data.put("Localização", autorlocale);
@@ -295,6 +299,7 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("statusDoProduto", "Ativo");
         data.put("entreguePor", "");
         data.put("uidEntregador", "");
+        data.put("id", id);
 
 
         if(simounao.equals("Sim")){
@@ -309,7 +314,7 @@ public class mandarSolicitacao extends AppCompatActivity {
         DecimalFormat formatador = new DecimalFormat("0.00");
         data.put("Preço", formatador.format(calculodePreco));
 
-        usersDb.collection("Solicitacoes-Entregas").add(data);
+        doc.set(data);
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

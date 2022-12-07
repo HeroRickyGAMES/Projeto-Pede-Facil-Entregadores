@@ -9,12 +9,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 
 public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<cardsEntregas> list;
+    private FirebaseFirestore usersDb;
+    String UID;
 
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
@@ -77,6 +87,28 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
         @Override
         public void onClick(View v) {
 
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            UID = user.getUid();
+
+            usersDb = FirebaseFirestore.getInstance();
+
+            DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(user.getUid());
+
+
+            entregadorDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                    DocumentSnapshot document = task.getResult();
+
+                    if(document.exists()){
+
+
+
+                    }
+
+                }
+            });
         }
     }
 }
