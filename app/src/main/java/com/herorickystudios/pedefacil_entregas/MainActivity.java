@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<cardsEntregas> list;
     FloatingActionButton fabLojaAdd;
     cardsEntregas chaatTxt;
+    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +66,49 @@ public class MainActivity extends AppCompatActivity {
         adapter = new entregasAdapter(this, list);
         viewEntregas.setAdapter(adapter);
         viewEntregas.setLayoutManager(new LinearLayoutManager(this));
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+
+                list.clear();
+                adapter.notifyDataSetChanged();
+
+
+                if(swipeRefreshLayout.isRefreshing()){
+                    updateListEntregador();
+                    updateListLoja();
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
 
         UID = user.getUid();
 
         usersDb = FirebaseFirestore.getInstance();
 
+        updateListEntregador();
+        updateListLoja();
+
+    }
+    public void onclickfab(View view){
+        //Manda para a nova Activity
+        Intent intent = new Intent(this, mandarSolicitacao.class);
+        startActivity(intent);
+    }
+    public void gotoSettings(View view){
+
+        Intent intent = new Intent(this, configActivity.class);
+        startActivity(intent);
+
+    }
+    public void updateListEntregador(){
         DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(user.getUid());
-        DocumentReference LojaDocument =  usersDb.collection("Loja").document(user.getUid());
+
 
         entregadorDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -144,8 +182,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
+    }
+    public void updateListLoja(){
+        DocumentReference LojaDocument =  usersDb.collection("Loja").document(user.getUid());
 
         LojaDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -186,16 +225,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-    public void onclickfab(View view){
-        //Manda para a nova Activity
-        Intent intent = new Intent(this, mandarSolicitacao.class);
-        startActivity(intent);
-    }
-    public void gotoSettings(View view){
-
-        Intent intent = new Intent(this, configActivity.class);
-        startActivity(intent);
-
     }
 }
