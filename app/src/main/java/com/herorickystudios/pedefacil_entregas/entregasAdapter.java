@@ -150,6 +150,21 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                         System.out.println(latitude);
                         System.out.println(longitude);
 
+                        if(statusdaentrega.equals("Em Pagamento")){
+
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Em Pagamento!")
+                                    .setMessage("Está em pagamento, por favor, aguarde até o pagamento ser concluido! Se o pagamento foi concluido, arraste para baixo até aparecer a bolinha branca, caso esteja como pronto para (Pronto para a Entrega), clique novamente e faça a entrega!")
+                                    .setCancelable(true)
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }).show();
+
+                        }else{
+
                         if(statusdaentrega.equals("Ativo")){
 
                         new AlertDialog.Builder(context)
@@ -185,6 +200,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                     }
                                 }).show();
                     }else{
+
                             if(entregadorNameFromEntrega.equals(entregadorName)){
 
                                 new AlertDialog.Builder(context)
@@ -222,6 +238,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                             }
                         }
+                      }
                    }
                 }
             });
