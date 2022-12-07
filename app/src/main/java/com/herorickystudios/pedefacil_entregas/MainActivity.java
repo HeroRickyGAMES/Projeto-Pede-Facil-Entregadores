@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
-    private String UID, nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador;
+    private String UID, nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
     private double latitude, longitude, distance;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         usersDb = FirebaseFirestore.getInstance();
 
-
         DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(user.getUid());
         DocumentReference LojaDocument =  usersDb.collection("Loja").document(user.getUid());
 
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                    usersDb.collection("Solicitacoes-Entregas").whereEqualTo("statusDoProduto", "Ativo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    usersDb.collection("Solicitacoes-Entregas").whereNotEqualTo("statusDoProduto", "Inativo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                                 statusDoProduto = dataSnapshot.get("statusDoProduto").toString();
                                 entreguePor = dataSnapshot.get("entreguePor").toString();
                                 uidEntregador = dataSnapshot.get("uidEntregador").toString();
+                                productID = dataSnapshot.get("id").toString();
 
                                 try {
                                     List addressList = geocoder.getFromLocationName(lojaLocal, 1);
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 distance = SphericalUtil.computeDistanceBetween(inicial, endpoint);
 
-                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "Distancia de você: " +  String.format("%.2f", distance / 1000) +  " km" , "R$: " + preco, statusDoProduto, entreguePor, uidEntregador);
+                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "Distancia de você: " +  String.format("%.2f", distance / 1000) +  " km" , "R$: " + preco, statusDoProduto, entreguePor, uidEntregador, productID);
 
                                 list.add(chaatTxt);
 
@@ -171,9 +171,9 @@ public class MainActivity extends AppCompatActivity {
                                 statusDoProduto = dataSnapshot.get("statusDoProduto").toString();
                                 entreguePor = dataSnapshot.get("entreguePor").toString();
                                 uidEntregador = dataSnapshot.get("uidEntregador").toString();
+                                productID = dataSnapshot.get("id").toString();
 
-
-                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "" , "R$: " + preco, statusDoProduto, entreguePor, uidEntregador);
+                                chaatTxt = new cardsEntregas( "Pertence á: " + lojaName, "Nome do produto: " + productName, "Local da loja: " + lojaLocal, "Local de entrega: " + entregaLocal, "" , "R$: " + preco, statusDoProduto, entreguePor, uidEntregador, productID);
 
                                 list.add(chaatTxt);
 

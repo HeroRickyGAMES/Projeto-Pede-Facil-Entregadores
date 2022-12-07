@@ -173,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
                     user.put("Tipo de conta", typeACC);
                     user.put("Latitude", latitude);
                     user.put("Longitude", longitude);
+                    user.put("uid", getUID);
 
                     System.out.println("String" + getUID);
 

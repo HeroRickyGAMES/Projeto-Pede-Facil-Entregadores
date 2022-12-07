@@ -1,12 +1,14 @@
 package com.herorickystudios.pedefacil_entregas;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,14 +20,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<cardsEntregas> list;
     private FirebaseFirestore usersDb;
-    String UID;
-
+    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega;
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
         this.context = context;
@@ -54,6 +57,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
         holder.textestaAtivo.setText(users.getEstaAtivo());
         holder.textEntreguePor.setText(users.getEntreguePor());
         holder.textuidEntregaor.setText(users.getUidEntregaor());
+        holder.textProductID.setText(users.getProductID());
     }
 
     @Override
@@ -63,7 +67,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView textTitulo, textnomeL, textlocalL, textendereçoL, textDistanciadvc, textPreco, textestaAtivo, textEntreguePor, textuidEntregaor;
+        TextView textTitulo, textnomeL, textlocalL, textendereçoL, textDistanciadvc, textPreco, textestaAtivo, textEntreguePor, textuidEntregaor, textProductID;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,6 +83,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
             textestaAtivo = itemView.findViewById(R.id.textestaAtivo);
             textEntreguePor = itemView.findViewById(R.id.textEntreguePor);
             textuidEntregaor = itemView.findViewById(R.id.textuidEntregaor);
+            textProductID = itemView.findViewById(R.id.textProductID);
 
             //st = mensage.getText().toString();
 
@@ -87,12 +92,15 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
         @Override
         public void onClick(View v) {
 
-            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            UID = user.getUid();
-
             usersDb = FirebaseFirestore.getInstance();
 
-            DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(user.getUid());
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            UID = user.getUid();
+
+            System.out.println(UID);
+
+            DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(UID);
 
 
             entregadorDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -103,10 +111,88 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                     if(document.exists()){
 
+                        entregadorName = document.get("nameCompleteUser").toString();
 
-
+                        System.out.println(entregadorName);
                     }
+                    entrega();
+                }
+            });
+        }
 
+        public void entrega(){
+            DocumentReference entregaDoc =  usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+            entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                    DocumentSnapshot document2 = task.getResult();
+
+                    if(document2.exists()){
+
+
+                        statusdaentrega = document2.getString("statusDoProduto");
+                        entregadorNameFromEntrega = document2.getString("entreguePor");
+                        if(statusdaentrega == "Ativo"){
+
+                        new AlertDialog.Builder(context)
+                                .setTitle("Fazer a entrega?")
+                                .setMessage("Você deseja realizar essa entrega?")
+                                .setCancelable(true)
+                                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+
+                                    }
+                                })
+                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        Map<String, Object> data = new HashMap<>();
+                                        data.put("entreguePor", entregadorName);
+                                        data.put("uidEntregador", UID);
+                                        data.put("statusDoProduto", "Em Entrega");
+
+                                        DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+                                        setDB.update(data);
+
+                                    }
+                                }).show();
+                    }else{
+                            if(entregadorNameFromEntrega.equals(entregadorName)){
+
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Você chegou?")
+                                        .setMessage("Caso você tenha chegado, clique em sim!")
+                                        .setCancelable(true)
+                                        .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+
+                                            }
+                                        })
+                                        .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                Map<String, Object> data = new HashMap<>();
+                                                data.put("statusDoProduto", "Em Pagamento");
+
+                                                DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+                                                setDB.update(data);
+
+                                            }
+                                        }).show();
+
+                            }
+                        }
+                   }
                 }
             });
         }

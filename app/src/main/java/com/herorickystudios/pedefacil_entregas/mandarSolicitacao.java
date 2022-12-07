@@ -287,7 +287,7 @@ public class mandarSolicitacao extends AppCompatActivity {
     public void sandtoDB(){
         DocumentReference doc = usersDb.collection("Solicitacoes-Entregas").document();
 
-        id =  doc.getId();
+        id =  doc.getId().replaceAll(" ", "");
 
         System.out.println("O UID É "+ id);
         Map<String, Object> data = new HashMap<>();
