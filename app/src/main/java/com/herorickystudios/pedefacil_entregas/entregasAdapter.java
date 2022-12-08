@@ -136,6 +136,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                 intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
                                 intent.putExtra("UidEntregador", uidEntregador);
                                 intent.putExtra("idProduto", textProductID.getText().toString());
+                                intent.putExtra("tituloProduto", textTitulo.getText().toString());
                                 context.startActivity(intent);
 
                             }
