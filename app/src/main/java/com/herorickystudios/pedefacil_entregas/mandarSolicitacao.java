@@ -289,7 +289,7 @@ public class mandarSolicitacao extends AppCompatActivity {
 
         id =  doc.getId().replaceAll(" ", "");
 
-        System.out.println("O UID É "+ id);
+        System.out.println("O ID É "+ id);
         Map<String, Object> data = new HashMap<>();
         data.put("Pertence a", autorname);
         data.put("Localização", autorlocale);

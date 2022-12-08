@@ -30,7 +30,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
     Context context;
     ArrayList<cardsEntregas> list;
     private FirebaseFirestore usersDb;
-    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador;
+    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador, precorestante;
     Double latiInt, longInt;
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
@@ -128,7 +128,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                 DocumentSnapshot document3 = task.getResult();
 
                                 publicKeyEntregador = document3.getString("publicKey");
-                                secretKeyEntregador = document3.getString("publicKey");
+                                secretKeyEntregador = document3.getString("secretKey");
 
                                 intent.putExtra("Preco", preco);
                                 intent.putExtra("Entregador", entregadorNameFromEntrega);
@@ -136,8 +136,36 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                 intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
                                 intent.putExtra("UidEntregador", uidEntregador);
                                 intent.putExtra("idProduto", textProductID.getText().toString());
-                                intent.putExtra("tituloProduto", textTitulo.getText().toString());
+                                intent.putExtra("tituloProduto", textnomeL.getText().toString());
                                 context.startActivity(intent);
+
+                            }
+                        });
+                    }
+                    if(statusdaentrega.equals("Pagas todas as taxas")){
+
+                        precorestante = document.getString("PrecoRestante");
+                        DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
+
+                        entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                                DocumentSnapshot document3 = task.getResult();
+
+                                publicKeyEntregador = document3.getString("publicKey");
+                                secretKeyEntregador = document3.getString("secretKey");
+
+                                Intent intent2 = new Intent(context, paymentComplete.class);
+
+                                intent2.putExtra("PrecoRestante", precorestante);
+                                intent2.putExtra("UidEntregador",  uidEntregador);
+                                intent2.putExtra("idProduto",  textProductID.getText().toString());
+                                intent2.putExtra("tituloProduto",  textnomeL.getText().toString());
+                                intent2.putExtra("PublicKeyEntregador",  publicKeyEntregador);
+                                intent2.putExtra("SecretKeyEntregador",  secretKeyEntregador);
+
+                                context.startActivity(intent2);
 
                             }
                         });

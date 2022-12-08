@@ -51,6 +51,8 @@ public class paymentDeveloper extends AppCompatActivity {
         idProduto = getIntent().getExtras().getString("idProduto");
         tituloProduto = getIntent().getExtras().getString("tituloProduto");
 
+        System.out.println("ID do produto" + idProduto);
+
         setTitle("Taxas");
 
         DocumentReference entregaDoc =  usersDb.collection("Server").document("ServerValues");
@@ -94,6 +96,8 @@ public class paymentDeveloper extends AppCompatActivity {
             intent.putExtra("UidEntregador", UidEntregador);
             intent.putExtra("idProduto", idProduto);
             intent.putExtra("tituloProduto", tituloProduto);
+            intent.putExtra("PublicKeyEntregador", PublicKeyEntregador);
+            intent.putExtra("SecretKeyEntregador", SecretKeyEntregador);
 
             startActivity(intent);
 

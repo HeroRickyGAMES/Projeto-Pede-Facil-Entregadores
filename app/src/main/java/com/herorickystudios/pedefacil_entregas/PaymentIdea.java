@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class PaymentIdea extends AppCompatActivity {
 
-    String PublicKeyIdea, SecretKeyIdea, idProduto, UidEntregador, tituloProduto, PrecoRestante, taxadoIdealista, customerID, EphericalKey, ClientSecret;
+    String PublicKeyIdea, SecretKeyIdea, idProduto, UidEntregador, tituloProduto, PrecoRestante, taxadoIdealista, customerID, EphericalKey, ClientSecret, PublicKeyEntregador, SecretKeyEntregador;
     private FirebaseFirestore usersDb;
     PaymentSheet paymentSheet;
 
@@ -44,8 +44,12 @@ public class PaymentIdea extends AppCompatActivity {
 
         idProduto =  getIntent().getExtras().getString("idProduto");
         UidEntregador =  getIntent().getExtras().getString("UidEntregador");
-        tituloProduto =  getIntent().getExtras().getString("tituloProduto");
+        tituloProduto =  getIntent().getExtras().getString("tituloProduto");;
         PrecoRestante =  getIntent().getExtras().getString("PrecoRestante");
+        PublicKeyEntregador = getIntent().getExtras().getString("PublicKeyEntregador");
+        SecretKeyEntregador = getIntent().getExtras().getString("SecretKeyEntregador");
+
+        System.out.println("ID do produto" + idProduto);
 
         usersDb = FirebaseFirestore.getInstance();
 
@@ -57,8 +61,8 @@ public class PaymentIdea extends AppCompatActivity {
 
                 DocumentSnapshot document = task.getResult();
 
-                PublicKeyIdea = document.getString("PublicKeyDeveloper");
-                SecretKeyIdea = document.getString("SecretKeyDeveloper");
+                PublicKeyIdea = document.getString("PublicKeyIdea");
+                SecretKeyIdea = document.getString("SecretKeyIdea");
                 taxadoIdealista = document.getString("taxadoDev");
 
                 PaymentConfiguration.init(getApplicationContext(), PublicKeyIdea);
@@ -90,6 +94,8 @@ public class PaymentIdea extends AppCompatActivity {
             intent.putExtra("UidEntregador", UidEntregador);
             intent.putExtra("idProduto", idProduto);
             intent.putExtra("tituloProduto", tituloProduto);
+            intent.putExtra("PublicKeyEntregador", PublicKeyEntregador);
+            intent.putExtra("SecretKeyEntregador", SecretKeyEntregador);
 
             startActivity(intent);
 
