@@ -94,7 +94,10 @@ public class paymentComplete extends AppCompatActivity {
 
             Map<String, Object> data = new HashMap<>();
             data.put("statusDoProduto", "Pronto para a entrega");
-
+            data.put("RazãodoEntregador", "");
+            data.put("LocalizacaoEntregador", "");
+            data.put("LatitudeDoEntregador", "");
+            data.put("logitudeEntregador", "");
             entrega.update(data);
 
             Intent intent = new Intent(this, MainActivity.class);
@@ -246,7 +249,7 @@ public class paymentComplete extends AppCompatActivity {
 
                 new AlertDialog.Builder(paymentComplete.this)
                         .setTitle("Ocorreu um problema ao efetuar o pagamento!")
-                        .setMessage("Por favor, verifique com seu entregador, se ele preencheu as chaves Publicas e Privadas da Stripe no perfil dele! \nCaso ele tenha feito isso, peça para que ele verifique se está apto para receber pagamentos na Stripe!")
+                        .setMessage("Por favor, verifique com seu entregador, se ele preencheu as chaves Publicas e Privadas da Stripe no perfil dele! \n Caso ele tenha feito isso, peça para que ele verifique se está apto para receber pagamentos na Stripe!")
                         .setCancelable(true)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
