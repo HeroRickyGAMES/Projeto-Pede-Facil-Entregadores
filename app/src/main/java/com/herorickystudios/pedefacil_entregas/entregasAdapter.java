@@ -30,7 +30,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
     Context context;
     ArrayList<cardsEntregas> list;
     private FirebaseFirestore usersDb;
-    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador, precorestante, latitudeEntregador, logitudeEntregador, statusDoProduto, RazaodoEntregador, LocalizacaoEntregador, LatitudeDoEntregador, logitudeDoEntregador;
+    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, LocalEntregaa , localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador, precorestante, latitudeEntregador, logitudeEntregador, statusDoProduto, RazaodoEntregador, LocalizacaoEntregador, LatitudeDoEntregador, logitudeDoEntregador;
     Double latiInt, longInt;
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
@@ -153,6 +153,27 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                         });
                  }
 
+                    if(statusdaentrega.equals("Entregue")){
+
+                        statusDoProduto = document.getString("statusDoProduto");
+                        RazaodoEntregador = document.getString("RazãodoEntregador");
+                        LocalizacaoEntregador = document.getString("LocalizacaoEntregador");
+                        LatitudeDoEntregador = document.getString("LatitudeDoEntregador");
+                        logitudeDoEntregador = document.getString("logitudeEntregador");
+
+                        new AlertDialog.Builder(context)
+                                .setTitle("Relatorio de entrega.")
+                                .setMessage("Status do produto: " + statusDoProduto + " \n " + "Razão do entregador: " + RazaodoEntregador + " \n " + "Localização do entregador quando fez a entrega: " + LocalizacaoEntregador + " \n "+ "Latitude do entregador quando fez a entrega: " + LatitudeDoEntregador + " \n "+ "Longitude do Entregador quando fez a entrega: " + logitudeDoEntregador)
+                                .setCancelable(true)
+                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
+
+                    }
+
                     if(statusdaentrega.equals("Pagas todas as taxas")){
 
                         precorestante = document.getString("PrecoRestante");
@@ -269,10 +290,13 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
 
                         statusdaentrega = document2.getString("statusDoProduto");
+                        LocalEntregaa = document2.getString("Local de Entrega");
                         entregadorNameFromEntrega = document2.getString("entreguePor");
                         latiInt = document2.getDouble("latitude");
                         longInt = document2.getDouble("longitude");
                         localizaçãoloja = document2.getString("Localização");
+
+                        System.out.println("Loja: " + localizaçãoloja);
 
                         latitude = String.valueOf(latiInt);
                         longitude = String.valueOf(longInt);
@@ -334,7 +358,6 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                     }
                                 }).show();
                     }else{
-
                             if(statusdaentrega.equals("Pronto para a entrega")){
 
                                 new AlertDialog.Builder(context)
@@ -346,7 +369,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                             public void onClick(DialogInterface dialog, int which) {
 
                                                 Map<String, Object> data = new HashMap<>();
-                                                data.put("RazãodoEntregador", "Clicou em não ao receber o produto!");
+                                                data.put("RazãodoEntregador", "Clicou em não ao receber o produto para fazer a entrega!");
                                                 data.put("LocalizacaoEntregador", localizacaoEntregador);
                                                 data.put("LatitudeDoEntregador", latitudeEntregador);
                                                 data.put("logitudeEntregador", logitudeEntregador);
@@ -363,7 +386,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                                                 Map<String, Object> data = new HashMap<>();
                                                 data.put("statusDoProduto", "Em entrega");
-                                                data.put("RazãodoEntregador", "Clicou em sim ao receber o produto!");
+                                                data.put("RazãodoEntregador", "Clicou em sim ao receber o produto para fazer a entrega!");
                                                 data.put("LocalizacaoEntregador", localizacaoEntregador);
                                                 data.put("LatitudeDoEntregador", latitudeEntregador);
                                                 data.put("logitudeEntregador", logitudeEntregador);
@@ -371,7 +394,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                                 DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
 
                                                 setDB.update(data);
-                                                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + textendereçoL);
+                                                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + LocalEntregaa);
                                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                                 mapIntent.setPackage("com.google.android.apps.maps");
                                                 context.startActivity(mapIntent);
@@ -379,7 +402,49 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                             }
                                         }).show();
 
-                            }
+                            }else{
+
+                                if(statusdaentrega.equals("Em entrega")){
+
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Você chegou ao destino?")
+                                            .setMessage("Você chegou ao destino?")
+                                            .setCancelable(true)
+                                            .setNegativeButton("Cancelar viagem", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    Map<String, Object> data = new HashMap<>();
+                                                    data.put("RazãodoEntregador", "Clicou em não");
+                                                    data.put("LocalizacaoEntregador", localizacaoEntregador);
+                                                    data.put("LatitudeDoEntregador", latitudeEntregador);
+                                                    data.put("logitudeEntregador", logitudeEntregador);
+
+                                                    DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+                                                    setDB.update(data);
+
+                                                }
+                                            })
+                                            .setPositiveButton("Cheguei", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    Map<String, Object> data = new HashMap<>();
+                                                    data.put("statusDoProduto", "Entregue");
+                                                    data.put("RazãodoEntregador", "Produto entregue");
+                                                    data.put("LocalizacaoEntregador", localizacaoEntregador);
+                                                    data.put("LatitudeDoEntregador", latitudeEntregador);
+                                                    data.put("logitudeEntregador", logitudeEntregador);
+
+                                                    DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
+
+                                                    setDB.update(data);
+
+                                                }
+                                            }).show();
+
+                                }else{
 
                             if(entregadorNameFromEntrega.equals(entregadorName)){
 
@@ -416,12 +481,16 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                             }
                                         }).show();
 
+                            }else{
+
                             }
+                           }
                         }
                       }
                    }
-                }
-            });
+                 }
+               }
+          });
         }
     }
 }

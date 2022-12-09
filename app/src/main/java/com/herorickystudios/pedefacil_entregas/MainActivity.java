@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                    usersDb.collection("Solicitacoes-Entregas").whereNotEqualTo("statusDoProduto", "Inativo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    usersDb.collection("Solicitacoes-Entregas").whereNotEqualTo("statusDoProduto", "Entregue").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
