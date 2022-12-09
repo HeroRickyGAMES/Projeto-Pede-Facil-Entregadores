@@ -302,6 +302,10 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("id", id);
         data.put("latitude", latitude);
         data.put("longitude", longitude);
+        data.put("LatitudeDoEntregador", "");
+        data.put("logitudeEntregador", "");
+        data.put("LocalizacaoEntregador", "");
+        data.put("RazãodoEntregador", "");
 
 
         if(simounao.equals("Sim")){
