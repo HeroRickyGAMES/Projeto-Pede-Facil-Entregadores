@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     setTitle("Itens adicionados por sua loja");
                     nomeUser = document.getString("nameCompleteUser");
 
-                    usersDb.collection("Solicitacoes-Entregas").whereEqualTo("Pertence a", nomeUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    usersDb.collection("Solicitacoes-Entregas").whereEqualTo("idLoja", UID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 

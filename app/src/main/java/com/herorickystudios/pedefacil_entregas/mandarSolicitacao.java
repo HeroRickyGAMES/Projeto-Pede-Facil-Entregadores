@@ -300,6 +300,7 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("entreguePor", "");
         data.put("uidEntregador", "");
         data.put("id", id);
+        data.put("idLoja", UID.replace(" ", ""));
         data.put("latitude", latitude);
         data.put("longitude", longitude);
         data.put("LatitudeDoEntregador", "");
