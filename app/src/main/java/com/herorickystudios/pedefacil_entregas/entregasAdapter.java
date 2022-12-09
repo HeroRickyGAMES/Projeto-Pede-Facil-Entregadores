@@ -108,10 +108,22 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                     DocumentSnapshot document = task.getResult();
+
+                    if(document.exists()){
                     statusdaentrega = document.getString("statusDoProduto");
                     entregadorNameFromEntrega = document.getString("entreguePor");
                     uidEntregador = document.getString("uidEntregador");
                     preco = document.getString("Preço");
+
+
+            DocumentReference lojaDoc =  usersDb.collection("Loja").document(UID);
+
+            lojaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot document2 = task.getResult();
+
+                    if(document2.exists()){
 
                     if(statusdaentrega.equals("Em Pagamento")){
 
@@ -139,38 +151,12 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                             }
                         });
-                    }
-                    if(statusdaentrega.equals("Pronto para a entrega")){
-
-                        statusDoProduto = document.getString("statusDoProduto");
-                        RazaodoEntregador = document.getString("RazãodoEntregador");
-                        LocalizacaoEntregador = document.getString("LocalizacaoEntregador");
-                        LatitudeDoEntregador = document.getString("LatitudeDoEntregador");
-                        logitudeDoEntregador = document.getString("logitudeEntregador");
-
-                        new AlertDialog.Builder(context)
-                                .setTitle("Relatorio de entrega.")
-                                .setMessage("Status do produto: " + statusDoProduto + " \n " + "Razão do entregador: " + RazaodoEntregador + " \n " + "Localização do entregador: " + LocalizacaoEntregador + " \n "+ "Latitude do entregador: " + LatitudeDoEntregador + " \n "+ "Longitude do Entregador" + logitudeDoEntregador)
-                                .setCancelable(true)
-                                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-
-                                    }
-                                })
-                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                }).show();
-
-                    }
+                 }
 
                     if(statusdaentrega.equals("Pagas todas as taxas")){
 
                         precorestante = document.getString("PrecoRestante");
+
                         DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
 
                         entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -197,11 +183,56 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                         });
                     }
 
+                    if(statusdaentrega.equals("A caminho")){
+
+                        statusDoProduto = document.getString("statusDoProduto");
+                        RazaodoEntregador = document.getString("RazãodoEntregador");
+                        LocalizacaoEntregador = document.getString("LocalizacaoEntregador");
+                        LatitudeDoEntregador = document.getString("LatitudeDoEntregador");
+                        logitudeDoEntregador = document.getString("logitudeEntregador");
+
+                        new AlertDialog.Builder(context)
+                                .setTitle("Relatorio de entrega.")
+                                .setMessage("Status do produto: " + statusDoProduto + " \n " + "Razão do entregador: " + RazaodoEntregador + " \n " + "Localização do entregador: " + LocalizacaoEntregador + " \n "+ "Latitude do entregador: " + LatitudeDoEntregador + " \n "+ "Longitude do Entregador" + logitudeDoEntregador)
+                                .setCancelable(true)
+                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
+
+                    }
+
+
+                    if(statusdaentrega.equals("Pronto para a entrega")){
+
+                        statusDoProduto = document.getString("statusDoProduto");
+                        RazaodoEntregador = document.getString("RazãodoEntregador");
+                        LocalizacaoEntregador = document.getString("LocalizacaoEntregador");
+                        LatitudeDoEntregador = document.getString("LatitudeDoEntregador");
+                        logitudeDoEntregador = document.getString("logitudeEntregador");
+
+                        new AlertDialog.Builder(context)
+                                .setTitle("Relatorio de entrega.")
+                                .setMessage("Status do produto: " + statusDoProduto + " \n " + "Razão do entregador: " + RazaodoEntregador + " \n " + "Localização do entregador: " + LocalizacaoEntregador + " \n "+ "Latitude do entregador: " + LatitudeDoEntregador + " \n "+ "Longitude do Entregador" + logitudeDoEntregador)
+                                .setCancelable(true)
+                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
+                        }
+                    }
                 }
+
             });
+            }
+            }
+     });
 
             DocumentReference entregadorDocument =  usersDb.collection("Entregador").document(UID);
-
 
             entregadorDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -285,6 +316,11 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                         data.put("entreguePor", entregadorName);
                                         data.put("uidEntregador", UID);
                                         data.put("statusDoProduto", "A caminho");
+                                        data.put("RazãodoEntregador", "O Entregador está a caminho!");
+                                        data.put("LocalizacaoEntregador", localizacaoEntregador);
+                                        data.put("LatitudeDoEntregador", latitudeEntregador);
+                                        data.put("logitudeEntregador", logitudeEntregador);
+
 
                                         DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
 

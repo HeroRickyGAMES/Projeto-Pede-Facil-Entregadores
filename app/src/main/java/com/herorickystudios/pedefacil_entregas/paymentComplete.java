@@ -107,8 +107,18 @@ public class paymentComplete extends AppCompatActivity {
         }else{
             Toast.makeText(this, "Pagamento cancelado, por favor, tente novamente!", Toast.LENGTH_SHORT).show();
 
-            Intent intent2 = new Intent(this, MainActivity.class);
-            startActivity(intent2);
+            DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("statusDoProduto", "Pagas todas as taxas");
+            data.put("PrecoRestante", PrecoRestante);
+
+            entrega.update(data);
+
+            Intent intent = new Intent(paymentComplete.this,MainActivity.class);
+            startActivity(intent);
+
+            finish();
         }
 
     }
@@ -269,7 +279,6 @@ public class paymentComplete extends AppCompatActivity {
                                 finish();
                             }
                         }).show();
-
             }
         }){
             @Override
