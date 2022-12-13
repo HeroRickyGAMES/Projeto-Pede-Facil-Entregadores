@@ -221,10 +221,7 @@ public class RegisterActivity extends AppCompatActivity {
                             user.put("publicKey", publicKey);
                             user.put("TrabalhaPara", spinner.getSelectedItem().toString());
                             user.put("secretKey", secretKey);
-
                         }
-
-
                     }
 
                     DocumentReference setDB = referencia.collection(typeACC).document(getUID);
