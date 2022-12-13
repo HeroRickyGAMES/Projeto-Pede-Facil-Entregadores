@@ -135,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
 
                             for(DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()){
 
-                                if(dataSnapshot.get("Pertence a").toString().equals(trabalhaLoja)){
-
                                 lojaName = dataSnapshot.get("Pertence a").toString();
                                 productName = dataSnapshot.get("Nome do produto").toString();
                                 lojaLocal = dataSnapshot.get("Localização").toString();
@@ -185,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 adapter.notifyDataSetChanged();
                                 }
-                            }
                         }
                     });
                 }else if (statusconta.equals("Banido")){
