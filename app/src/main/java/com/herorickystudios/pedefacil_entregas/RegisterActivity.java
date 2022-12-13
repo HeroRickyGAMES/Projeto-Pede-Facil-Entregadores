@@ -200,6 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     Map<String, Object> user = new HashMap<>();
                     user.put("nameCompleteUser", nome);
+                    user.put("statusDaConta", "Ativo");
                     user.put("idadeUser", idade);
                     user.put("CPF", CPF);
                     user.put("Email", email);

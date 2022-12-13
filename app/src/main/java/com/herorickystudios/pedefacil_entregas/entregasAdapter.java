@@ -408,25 +408,9 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                                     new AlertDialog.Builder(context)
                                             .setTitle("Você chegou ao destino?")
-                                            .setMessage("Você chegou ao destino?")
-                                            .setCancelable(true)
-                                            .setNegativeButton("Cancelar viagem", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                    Map<String, Object> data = new HashMap<>();
-                                                    data.put("RazãodoEntregador", "Clicou em não");
-                                                    data.put("LocalizacaoEntregador", localizacaoEntregador);
-                                                    data.put("LatitudeDoEntregador", latitudeEntregador);
-                                                    data.put("logitudeEntregador", logitudeEntregador);
-
-                                                    DocumentReference setDB = usersDb.collection("Solicitacoes-Entregas").document(textProductID.getText().toString().replace(" ", ""));
-
-                                                    setDB.update(data);
-
-                                                }
-                                            })
-                                            .setPositiveButton("Cheguei", new DialogInterface.OnClickListener() {
+                                            .setMessage("Você chegou ao destino e entregou o pedido?")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Cheguei, e entreguei", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
 

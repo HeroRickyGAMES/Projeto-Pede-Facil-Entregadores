@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
-    private String UID, nomeUser, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
+    private String UID, nomeUser, trabalhaLoja, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
     private double latitude, longitude, distance;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                     nomeUser = document.getString("nameCompleteUser");
                     userLatitude = document.getString("Latitude");
                     userLongitude = document.getString("Longitude");
+                    trabalhaLoja = document.getString("TrabalhaPara");
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
@@ -128,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                             for(DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()){
+
+                                if(dataSnapshot.get("Pertence a").toString().equals(trabalhaLoja)){
 
                                 lojaName = dataSnapshot.get("Pertence a").toString();
                                 productName = dataSnapshot.get("Nome do produto").toString();
@@ -154,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                                         log = String.valueOf(address.getLongitude());
                                         System.out.println("Em Latitude e longitude " + lat + " " +  log);
                                     }
+
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -175,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                                 list.add(chaatTxt);
 
                                 adapter.notifyDataSetChanged();
-
+                                }
                             }
                         }
                     });
