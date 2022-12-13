@@ -142,6 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="UID"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -151,6 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Product ID"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/textuidEntregaor"
         app:layout_constraintEnd_toStartOf="@+id/textTitulo"
         app:layout_constraintStart_toEndOf="@+id/textestaAtivo" />

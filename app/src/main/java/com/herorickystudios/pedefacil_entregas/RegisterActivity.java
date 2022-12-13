@@ -13,9 +13,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +36,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -45,12 +50,15 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText editNome, editIdade, editCPF, editEmail, editChavePublica, editChaveSecreta, editSenha, editEnderecoLoja;
-    TextView textStripeAviso, textStripeSaibaMais;
+    TextView textStripeAviso, textStripeSaibaMais, textPergunta;
     String nome, idade, CPF, email, senha, typeACC, getUID, AccType, localização, latitude, longitude, secretKey, publicKey;
     RadioGroup radioAccType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
     int selectIDType;
     RadioButton radioTypeAcc;
+    Spinner spinner;
+    List<String> lojaname;
+    ArrayAdapter<String> arrayAdapter;
 
     private static final int PERMISSION_FINE_LOCATION = 99;
     LocationRequest locationRequest;
@@ -75,6 +83,8 @@ public class RegisterActivity extends AppCompatActivity {
         editChaveSecreta = findViewById(R.id.editChaveSecreta);
         textStripeAviso = findViewById(R.id.textStripeAviso);
         textStripeSaibaMais = findViewById(R.id.textStripeSaibaMais);
+        spinner = findViewById(R.id.spinner);
+        textPergunta = findViewById(R.id.textPergunta);
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(1000 * 30);
@@ -86,9 +96,33 @@ public class RegisterActivity extends AppCompatActivity {
         editChavePublica.setVisibility(View.INVISIBLE);
         textStripeSaibaMais.setVisibility(View.INVISIBLE);
         textStripeAviso.setVisibility(View.INVISIBLE);
+        textPergunta.setVisibility(View.INVISIBLE);
+        spinner.setVisibility(View.INVISIBLE);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        lojaname = new ArrayList<>();
+        arrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, lojaname);
+
+
         updateGPS();
+        getdataFromDB();
+    }
+    public void getdataFromDB(){
+
+        referencia.collection("Loja").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()){
+                    if(dataSnapshot.exists()){
+
+                        lojaname.add(dataSnapshot.getString("nameCompleteUser"));
+                        arrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
+                        spinner.setAdapter(arrayAdapter);
+                    }
+                }
+            }
+        });
     }
 
     public void CadastroBtn(View view){
@@ -173,18 +207,18 @@ public class RegisterActivity extends AppCompatActivity {
                     user.put("Tipo de conta", typeACC);
                     user.put("Latitude", latitude);
                     user.put("Longitude", longitude);
-                    user.put("uid", getUID);
+                    user.put("uid", getUID.replace(" ", ""));
 
                     System.out.println("String" + getUID);
 
                     if(typeACC.equals("Entregador")){
-                        if(editChaveSecreta.getText().toString().equals("") || editChavePublica.getText().toString().equals("")){
+                        if(editChaveSecreta.getText().toString().equals("") || editChavePublica.getText().toString().equals("") || spinner.getSelectedItem().toString().equals("")){
 
                             Toast.makeText(RegisterActivity.this, "Preencha o campo das chaves!", Toast.LENGTH_SHORT).show();
 
                         }else{
-
                             user.put("publicKey", publicKey);
+                            user.put("TrabalhaPara", spinner.getSelectedItem().toString());
                             user.put("secretKey", secretKey);
 
                         }
@@ -234,14 +268,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         editNome.setHint("Seu nome completo");
         editCPF.setHint("CPF");
-
+        editIdade.setHint("Sua idade");
         editChaveSecreta.setVisibility(View.VISIBLE);
         editChavePublica.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
 
         editEnderecoLoja.setVisibility(View.INVISIBLE);
 
         textStripeSaibaMais.setVisibility(View.VISIBLE);
         textStripeAviso.setVisibility(View.VISIBLE);
+        textPergunta.setVisibility(View.VISIBLE);
     }
     public void hintloja(View view){
 
@@ -249,13 +285,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         editNome.setHint("Razão Social / Nome da Loja");
         editCPF.setHint("CNPJ");
+        editIdade.setHint("Tempo de Atuação (Em anos)");
         editEnderecoLoja.setVisibility(View.VISIBLE);
 
         editChaveSecreta.setVisibility(View.INVISIBLE);
+        spinner.setVisibility(View.INVISIBLE);
         editChavePublica.setVisibility(View.INVISIBLE);
 
         textStripeSaibaMais.setVisibility(View.INVISIBLE);
         textStripeAviso.setVisibility(View.INVISIBLE);
+        textPergunta.setVisibility(View.INVISIBLE);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
