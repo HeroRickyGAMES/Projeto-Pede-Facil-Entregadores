@@ -2,13 +2,16 @@ package com.herorickystudios.pedefacil_entregas;
 
 //Programado por HeroRickyGames
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
-    private String UID, nomeUser, trabalhaLoja, lojaName, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
+    private String UID, nomeUser, trabalhaLoja, lojaName,statusconta, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
     private double latitude, longitude, distance;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
@@ -121,9 +124,11 @@ public class MainActivity extends AppCompatActivity {
                     userLatitude = document.getString("Latitude");
                     userLongitude = document.getString("Longitude");
                     trabalhaLoja = document.getString("TrabalhaPara");
+                    statusconta = document.getString("statusDaConta");
 
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
+                    if(document.getString("statusDaConta").equals("Ativo")){
                     usersDb.collection("Solicitacoes-Entregas").whereNotEqualTo("statusDoProduto", "Entregue").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -183,8 +188,35 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }
+                }else if (statusconta.equals("Banido")){
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Sua Conta foi banida!")
+                                .setMessage("Sua Conta foi banida ou desativada, caso seja um engano, por favor, me contate via Email!")
+                                .setCancelable(false)
+                                .setNegativeButton("Contestar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                                "mailto","ricojn9@gmail.com", null));
+                                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Fui Banido do Pede Facil Entregadores");
+                                        emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+                                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                                    }
+                                })
+                                .setPositiveButton("Deslogar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        FirebaseAuth.getInstance().signOut();
+
+                                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+
+                                    }
+             }).show();
+             }
             }
+           }
         });
     }
     public void updateListLoja(){
