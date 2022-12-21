@@ -4,7 +4,7 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 android {
-    namespace 'com.herorickystudios.pedefacil_entregas'
+    namespace 'com.herorickystudiosoficial.pedefacil_entregas'
     compileSdk 33
 
     defaultConfig {
