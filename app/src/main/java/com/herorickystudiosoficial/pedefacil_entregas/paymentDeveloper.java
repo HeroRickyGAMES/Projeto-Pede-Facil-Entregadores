@@ -1,4 +1,4 @@
-package com.herorickystudios.pedefacil_entregas;
+package com.herorickystudiosoficial.pedefacil_entregas;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,28 +30,30 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PaymentIdea extends AppCompatActivity {
+public class paymentDeveloper extends AppCompatActivity {
 
-    String PublicKeyIdea, SecretKeyIdea, idProduto, UidEntregador, tituloProduto, PrecoRestante, taxadoIdealista, customerID, EphericalKey, ClientSecret, PublicKeyEntregador, SecretKeyEntregador;
+    String Preco, Entregador, PublicKeyEntregador, SecretKeyEntregador, PublicKey, SecretKey, customerID, EphericalKey, ClientSecret, taxadoDev, UidEntregador, idProduto, tituloProduto;
     private FirebaseFirestore usersDb;
     PaymentSheet paymentSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment_idea);
-        setTitle("Taxas");
+        setContentView(R.layout.activity_payment_developer);
 
-        idProduto =  getIntent().getExtras().getString("idProduto");
-        UidEntregador =  getIntent().getExtras().getString("UidEntregador");
-        tituloProduto =  getIntent().getExtras().getString("tituloProduto");;
-        PrecoRestante =  getIntent().getExtras().getString("PrecoRestante");
+        usersDb = FirebaseFirestore.getInstance();
+
+        Preco = getIntent().getExtras().getString("Preco");
+        Entregador = getIntent().getExtras().getString("Entregador");
         PublicKeyEntregador = getIntent().getExtras().getString("PublicKeyEntregador");
         SecretKeyEntregador = getIntent().getExtras().getString("SecretKeyEntregador");
+        UidEntregador = getIntent().getExtras().getString("UidEntregador");
+        idProduto = getIntent().getExtras().getString("idProduto");
+        tituloProduto = getIntent().getExtras().getString("tituloProduto");
 
         System.out.println("ID do produto" + idProduto);
 
-        usersDb = FirebaseFirestore.getInstance();
+        setTitle("Taxas");
 
         DocumentReference entregaDoc =  usersDb.collection("Server").document("ServerValues");
 
@@ -61,22 +63,22 @@ public class PaymentIdea extends AppCompatActivity {
 
                 DocumentSnapshot document = task.getResult();
 
-                PublicKeyIdea = document.getString("PublicKeyIdea");
-                SecretKeyIdea = document.getString("SecretKeyIdea");
-                taxadoIdealista = document.getString("taxadoDev");
+                PublicKey = document.getString("PublicKeyDeveloper");
+                SecretKey = document.getString("SecretKeyDeveloper");
+                taxadoDev = document.getString("taxadoDev");
 
-                PaymentConfiguration.init(getApplicationContext(), PublicKeyIdea);
-                System.out.println(PublicKeyIdea);
-                System.out.println(SecretKeyIdea);
+                PaymentConfiguration.init(getApplicationContext(), PublicKey);
+                System.out.println(PublicKey);
+                System.out.println(SecretKey);
 
             }
         });
+
         paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
             onPaymentResult(paymentSheetResult);
         });
 
         pagarBTNMetodo();
-
     }
 
     private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
@@ -85,10 +87,10 @@ public class PaymentIdea extends AppCompatActivity {
 
             Toast.makeText(this, "Pagamento feito com sucesso!", Toast.LENGTH_SHORT).show();
 
-            Integer taxadoIdealistaa = Integer.valueOf(taxadoIdealista);
-            Integer preco = Integer.valueOf(PrecoRestante) - taxadoIdealistaa;
+            Integer taxadoDeveloper = Integer.valueOf(taxadoDev);
+            Integer preco = Integer.valueOf(Preco.replaceAll("," , "")) - taxadoDeveloper;
 
-            Intent intent = new Intent(this, paymentComplete.class);
+            Intent intent = new Intent(this, PaymentIdea.class);
 
             intent.putExtra("PrecoRestante", preco.toString());
             intent.putExtra("UidEntregador", UidEntregador);
@@ -136,7 +138,7 @@ public class PaymentIdea extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
-                header.put("Authorization", "Bearer " + SecretKeyIdea);
+                header.put("Authorization", "Bearer " + SecretKey);
                 header.put("Stripe-Version", "2022-11-15");
                 return header;
             }
@@ -188,18 +190,19 @@ public class PaymentIdea extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
-                header.put("Authorization", "Bearer " + SecretKeyIdea);
+                header.put("Authorization", "Bearer " + SecretKey);
                 //header.put("Stripe-Version", "2022-11-15");
                 return header;
             }
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
-                Integer taxadoIdealistaa = Integer.valueOf(taxadoIdealista);
-                Integer preco = Integer.valueOf(PrecoRestante) - taxadoIdealistaa;
+                Integer taxadoDeveloper = Integer.valueOf(taxadoDev);
+                Integer preco = Integer.valueOf(Preco.replaceAll("," , "")) - taxadoDeveloper;
+
 
                 Map<String, String> params = new HashMap<>();
-                params.put("amount", taxadoIdealistaa.toString());
+                params.put("amount", taxadoDeveloper.toString());
                 params.put("currency", "brl");
                 params.put("automatic_payment_methods[enabled]", "true");
                 return params;
@@ -216,7 +219,7 @@ public class PaymentIdea extends AppCompatActivity {
 
         paymentSheet.presentWithPaymentIntent(
                 ClientSecret,
-                new PaymentSheet.Configuration("Taxa do idealista", new PaymentSheet.CustomerConfiguration(
+                new PaymentSheet.Configuration("Taxa do desenvolvedor", new PaymentSheet.CustomerConfiguration(
                         customerID,
                         EphericalKey
                 ))
@@ -249,14 +252,14 @@ public class PaymentIdea extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 System.out.println(error.networkResponse.toString());
 
-                Toast.makeText(PaymentIdea.this, error.networkResponse.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(paymentDeveloper.this, error.networkResponse.toString(), Toast.LENGTH_SHORT).show();
 
             }
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
-                header.put("Authorization", "Bearer " + SecretKeyIdea);
+                header.put("Authorization", "Bearer " + SecretKey);
                 header.put("Stripe-Version", "2022-11-15");
                 return header;
             }

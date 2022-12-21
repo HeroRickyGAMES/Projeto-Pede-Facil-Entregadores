@@ -1,12 +1,11 @@
-package com.herorickystudios.pedefacil_entregas;
+package com.herorickystudiosoficial.pedefacil_entregas;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
@@ -31,40 +30,30 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class paymentComplete extends AppCompatActivity {
+public class PaymentIdea extends AppCompatActivity {
 
-    String PrecoRestante, UidEntregador, idProduto, tituloProduto, PublicKey, SecretKey, customerID, EphericalKey, ClientSecret;
-
+    String PublicKeyIdea, SecretKeyIdea, idProduto, UidEntregador, tituloProduto, PrecoRestante, taxadoIdealista, customerID, EphericalKey, ClientSecret, PublicKeyEntregador, SecretKeyEntregador;
     private FirebaseFirestore usersDb;
     PaymentSheet paymentSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment_complete);
+        setContentView(R.layout.activity_payment_idea);
+        setTitle("Taxas");
 
-        setTitle("Pagamento");
-
-        PrecoRestante = getIntent().getExtras().getString("PrecoRestante");
-        UidEntregador = getIntent().getExtras().getString("UidEntregador");
-        idProduto = getIntent().getExtras().getString("idProduto");
-        tituloProduto = getIntent().getExtras().getString("tituloProduto");
-
-        PublicKey = getIntent().getExtras().getString("PublicKeyEntregador");
-        SecretKey = getIntent().getExtras().getString("SecretKeyEntregador");
-
-        System.out.println("Preco restante: " + PrecoRestante);
+        idProduto =  getIntent().getExtras().getString("idProduto");
+        UidEntregador =  getIntent().getExtras().getString("UidEntregador");
+        tituloProduto =  getIntent().getExtras().getString("tituloProduto");;
+        PrecoRestante =  getIntent().getExtras().getString("PrecoRestante");
+        PublicKeyEntregador = getIntent().getExtras().getString("PublicKeyEntregador");
+        SecretKeyEntregador = getIntent().getExtras().getString("SecretKeyEntregador");
 
         System.out.println("ID do produto" + idProduto);
-        System.out.println("ID do Entregador" + UidEntregador);
-        System.out.println("TituloProduto" + tituloProduto);
-        System.out.println("ID do Produto" + idProduto);
-        System.out.println("PublicKey final" + PublicKey);
-        System.out.println("Secret final" + SecretKey);
 
         usersDb = FirebaseFirestore.getInstance();
 
-        DocumentReference entregaDoc =  usersDb.collection("Entregador").document(UidEntregador);
+        DocumentReference entregaDoc =  usersDb.collection("Server").document("ServerValues");
 
         entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -72,7 +61,13 @@ public class paymentComplete extends AppCompatActivity {
 
                 DocumentSnapshot document = task.getResult();
 
-                PaymentConfiguration.init(getApplicationContext(), PublicKey);
+                PublicKeyIdea = document.getString("PublicKeyIdea");
+                SecretKeyIdea = document.getString("SecretKeyIdea");
+                taxadoIdealista = document.getString("taxadoDev");
+
+                PaymentConfiguration.init(getApplicationContext(), PublicKeyIdea);
+                System.out.println(PublicKeyIdea);
+                System.out.println(SecretKeyIdea);
 
             }
         });
@@ -81,6 +76,7 @@ public class paymentComplete extends AppCompatActivity {
         });
 
         pagarBTNMetodo();
+
     }
 
     private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
@@ -89,36 +85,26 @@ public class paymentComplete extends AppCompatActivity {
 
             Toast.makeText(this, "Pagamento feito com sucesso!", Toast.LENGTH_SHORT).show();
 
+            Integer taxadoIdealistaa = Integer.valueOf(taxadoIdealista);
+            Integer preco = Integer.valueOf(PrecoRestante) - taxadoIdealistaa;
 
-            DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
+            Intent intent = new Intent(this, paymentComplete.class);
 
-            Map<String, Object> data = new HashMap<>();
-            data.put("statusDoProduto", "Pronto para a entrega");
-            data.put("RazãodoEntregador", "");
-            data.put("LocalizacaoEntregador", "");
-            data.put("LatitudeDoEntregador", "");
-            data.put("logitudeEntregador", "");
-            entrega.update(data);
-
-            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("PrecoRestante", preco.toString());
+            intent.putExtra("UidEntregador", UidEntregador);
+            intent.putExtra("idProduto", idProduto);
+            intent.putExtra("tituloProduto", tituloProduto);
+            intent.putExtra("PublicKeyEntregador", PublicKeyEntregador);
+            intent.putExtra("SecretKeyEntregador", SecretKeyEntregador);
 
             startActivity(intent);
+
 
         }else{
             Toast.makeText(this, "Pagamento cancelado, por favor, tente novamente!", Toast.LENGTH_SHORT).show();
 
-            DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
-
-            Map<String, Object> data = new HashMap<>();
-            data.put("statusDoProduto", "Pagas todas as taxas");
-            data.put("PrecoRestante", PrecoRestante);
-
-            entrega.update(data);
-
-            Intent intent = new Intent(paymentComplete.this,MainActivity.class);
-            startActivity(intent);
-
-            finish();
+            Intent intent2 = new Intent(this, MainActivity.class);
+            startActivity(intent2);
         }
 
     }
@@ -150,7 +136,7 @@ public class paymentComplete extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
-                header.put("Authorization", "Bearer " + SecretKey);
+                header.put("Authorization", "Bearer " + SecretKeyIdea);
                 header.put("Stripe-Version", "2022-11-15");
                 return header;
             }
@@ -202,15 +188,18 @@ public class paymentComplete extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
-                header.put("Authorization", "Bearer " + SecretKey);
+                header.put("Authorization", "Bearer " + SecretKeyIdea);
                 //header.put("Stripe-Version", "2022-11-15");
                 return header;
             }
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
+                Integer taxadoIdealistaa = Integer.valueOf(taxadoIdealista);
+                Integer preco = Integer.valueOf(PrecoRestante) - taxadoIdealistaa;
+
                 Map<String, String> params = new HashMap<>();
-                params.put("amount", PrecoRestante);
+                params.put("amount", taxadoIdealistaa.toString());
                 params.put("currency", "brl");
                 params.put("automatic_payment_methods[enabled]", "true");
                 return params;
@@ -227,7 +216,7 @@ public class paymentComplete extends AppCompatActivity {
 
         paymentSheet.presentWithPaymentIntent(
                 ClientSecret,
-                new PaymentSheet.Configuration("Taxa do desenvolvedor", new PaymentSheet.CustomerConfiguration(
+                new PaymentSheet.Configuration("Taxa do idealista", new PaymentSheet.CustomerConfiguration(
                         customerID,
                         EphericalKey
                 ))
@@ -239,6 +228,8 @@ public class paymentComplete extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/customers", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
+
 
                 try {
                     JSONObject object = new JSONObject(response);
@@ -256,39 +247,21 @@ public class paymentComplete extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                System.out.println(error.networkResponse.toString());
 
-                new AlertDialog.Builder(paymentComplete.this)
-                        .setTitle("Ocorreu um problema ao efetuar o pagamento!")
-                        .setMessage("Por favor, verifique com seu entregador, se ele preencheu as chaves Publicas e Privadas da Stripe no perfil dele! \n Caso ele tenha feito isso, peça para que ele verifique se está apto para receber pagamentos na Stripe!")
-                        .setCancelable(true)
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(PaymentIdea.this, error.networkResponse.toString(), Toast.LENGTH_SHORT).show();
 
-                                DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
-
-                                Map<String, Object> data = new HashMap<>();
-                                data.put("statusDoProduto", "Pagas todas as taxas");
-                                data.put("PrecoRestante", PrecoRestante);
-
-                                entrega.update(data);
-
-                                Intent intent = new Intent(paymentComplete.this,MainActivity.class);
-                                startActivity(intent);
-
-                                finish();
-                            }
-                        }).show();
             }
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
-                header.put("Authorization", "Bearer " + SecretKey);
+                header.put("Authorization", "Bearer " + SecretKeyIdea);
                 header.put("Stripe-Version", "2022-11-15");
                 return header;
             }
 
+            @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 

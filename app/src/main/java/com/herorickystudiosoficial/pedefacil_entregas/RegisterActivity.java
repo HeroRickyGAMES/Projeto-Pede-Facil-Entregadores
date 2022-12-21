@@ -1,4 +1,4 @@
-package com.herorickystudios.pedefacil_entregas;
+package com.herorickystudiosoficial.pedefacil_entregas;
 
 //Programado por HeroRickyGames
 
@@ -45,7 +45,7 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText editNome, editIdade, editCPF, editEmail, editChavePublica, editChaveSecreta, editSenha, editEnderecoLoja;
-    TextView textStripeAviso, textStripeSaibaMais, textPergunta;
+    TextView textStripeAviso, textStripeSaibaMais;
     String nome, idade, CPF, email, senha, typeACC, getUID, AccType, localização, latitude, longitude, secretKey, publicKey;
     RadioGroup radioAccType;
     FirebaseFirestore referencia = FirebaseFirestore.getInstance();
@@ -75,7 +75,6 @@ public class RegisterActivity extends AppCompatActivity {
         editChaveSecreta = findViewById(R.id.editChaveSecreta);
         textStripeAviso = findViewById(R.id.textStripeAviso);
         textStripeSaibaMais = findViewById(R.id.textStripeSaibaMais);
-        textPergunta = findViewById(R.id.textPergunta);
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(1000 * 30);
@@ -87,8 +86,6 @@ public class RegisterActivity extends AppCompatActivity {
         editChavePublica.setVisibility(View.INVISIBLE);
         textStripeSaibaMais.setVisibility(View.INVISIBLE);
         textStripeAviso.setVisibility(View.INVISIBLE);
-        textPergunta.setVisibility(View.INVISIBLE);
-
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
@@ -243,7 +240,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         textStripeSaibaMais.setVisibility(View.VISIBLE);
         textStripeAviso.setVisibility(View.VISIBLE);
-        textPergunta.setVisibility(View.VISIBLE);
     }
     public void hintloja(View view){
 
@@ -259,7 +255,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         textStripeSaibaMais.setVisibility(View.INVISIBLE);
         textStripeAviso.setVisibility(View.INVISIBLE);
-        textPergunta.setVisibility(View.INVISIBLE);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

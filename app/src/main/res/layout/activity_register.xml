@@ -158,7 +158,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textPergunta" />
+        app:layout_constraintTop_toBottomOf="@+id/editEnderecoLoja" />
 
     <EditText
         android:id="@+id/editSenhar"
@@ -223,16 +223,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editChavePublica" />
-
-    <TextView
-        android:id="@+id/textPergunta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Qual loja você trabalha?"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/editEnderecoLoja"
-        tools:layout_editor_absoluteX="99dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

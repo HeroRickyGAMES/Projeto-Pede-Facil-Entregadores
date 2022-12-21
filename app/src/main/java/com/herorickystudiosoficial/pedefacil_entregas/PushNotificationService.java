@@ -1,4 +1,4 @@
-package com.herorickystudios.pedefacil_entregas;
+package com.herorickystudiosoficial.pedefacil_entregas;
 
 import android.Manifest;
 import android.app.Service;
