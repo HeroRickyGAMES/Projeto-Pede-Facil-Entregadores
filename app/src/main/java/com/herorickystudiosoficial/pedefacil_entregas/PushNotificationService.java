@@ -83,7 +83,6 @@ public class PushNotificationService extends Service {
                         userhs.put("Longitude", String.valueOf(location.getLongitude()));
 
                         entregadorDocument.update(userhs);
-
                     } catch (Exception e) {
                         System.out.println("Não foi possivel encontrar sua localização!" + e);
                  }

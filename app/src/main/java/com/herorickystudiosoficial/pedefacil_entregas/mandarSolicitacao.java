@@ -29,6 +29,7 @@ import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -287,6 +288,20 @@ public class mandarSolicitacao extends AppCompatActivity {
     public void sandtoDB(){
         DocumentReference doc = usersDb.collection("Solicitacoes-Entregas").document();
 
+
+        Calendar c = Calendar.getInstance();
+        String str = c.getTime().toString();
+
+        int PMAM = c.get(Calendar.AM_PM);
+
+        String calendarioData = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR);
+
+        String hora = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
+
+
+        System.out.println("Data no calendario " + calendarioData);
+        System.out.println("Hora no calendario " + hora);
+
         id =  doc.getId().replaceAll(" ", "");
 
         System.out.println("O ID É "+ id);
@@ -307,6 +322,7 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("logitudeEntregador", "");
         data.put("LocalizacaoEntregador", "");
         data.put("RazãodoEntregador", "");
+        data.put("Data de publicação", calendarioData + " " + hora);
 
 
         if(simounao.equals("Sim")){

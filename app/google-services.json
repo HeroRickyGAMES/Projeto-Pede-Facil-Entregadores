@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "823064699395",
-    "project_id": "pede-facil-entregadores-db",
-    "storage_bucket": "pede-facil-entregadores-db.appspot.com"
+    "project_number": "404344995033",
+    "project_id": "pedefacilentregadores-f5b14",
+    "storage_bucket": "pedefacilentregadores-f5b14.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:823064699395:android:819600588ba55a38566436",
+        "mobilesdk_app_id": "1:404344995033:android:7b0e696d0afec34bbd92c8",
         "android_client_info": {
           "package_name": "com.herorickystudiosoficial.pedefacil_entregas"
         }
       },
       "oauth_client": [
         {
-          "client_id": "823064699395-2mcls87no27rj1o7ut0ap2khemgpal9k.apps.googleusercontent.com",
+          "client_id": "404344995033-4cthpu392np2klgbvf84ecm2q94184n4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAsqc-3uXpNsImNNrME5M1Suu7bFyBmnYI"
+          "current_key": "AIzaSyA8W40DRtOfD1eTwxIOWmUkrwMb7200b18"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "823064699395-2mcls87no27rj1o7ut0ap2khemgpal9k.apps.googleusercontent.com",
+              "client_id": "404344995033-4cthpu392np2klgbvf84ecm2q94184n4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
