@@ -184,7 +184,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:hint="Endereço da sua loja"
+        android:hint="Endereço da sua loja (Rua, número - Bairro, Cidade/Municipio - Estado, Cep)"
         android:inputType="textPostalAddress"
         android:textAlignment="center"
         android:textSize="20sp"
