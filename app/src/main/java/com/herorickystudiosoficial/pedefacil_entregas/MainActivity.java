@@ -57,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startService(new Intent(getBaseContext(), NotificationService.class));
+        startService(new Intent(getBaseContext(), PushNotificationService.class));
 
         viewEntregas = findViewById(R.id.listEntregas);
-
-        startService(new Intent(getBaseContext(), PushNotificationService.class));
 
         fabLojaAdd = findViewById(R.id.fabLojaAdd);
 
