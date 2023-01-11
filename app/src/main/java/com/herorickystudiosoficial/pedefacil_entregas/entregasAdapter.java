@@ -127,30 +127,48 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
 
                     if(statusdaentrega.equals("Em Pagamento")){
 
-                        DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
+                        new AlertDialog.Builder(context)
+                                .setTitle("Pagar agora")
+                                .setMessage("Deseja pagar a entrega agora?")
+                                .setCancelable(true).setPositiveButton("Pagar somente apos a entrega", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                        entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        //Importa um valor para o banco de dados que certifica que o cliente irá pagar depois.
 
-                                Intent intent = new Intent(context, paymentDeveloper.class);
+                                    }
+                                })
+                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                DocumentSnapshot document3 = task.getResult();
+                                        DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
 
-                                publicKeyEntregador = document3.getString("publicKey");
-                                secretKeyEntregador = document3.getString("secretKey");
+                                        entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                                intent.putExtra("Preco", preco);
-                                intent.putExtra("Entregador", entregadorNameFromEntrega);
-                                intent.putExtra("PublicKeyEntregador", publicKeyEntregador);
-                                intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
-                                intent.putExtra("UidEntregador", uidEntregador);
-                                intent.putExtra("idProduto", textProductID.getText().toString());
-                                intent.putExtra("tituloProduto", textnomeL.getText().toString());
-                                context.startActivity(intent);
+                                                Intent intent = new Intent(context, paymentDeveloper.class);
 
-                            }
-                        });
+                                                DocumentSnapshot document3 = task.getResult();
+
+                                                publicKeyEntregador = document3.getString("publicKey");
+                                                secretKeyEntregador = document3.getString("secretKey");
+
+                                                intent.putExtra("Preco", preco);
+                                                intent.putExtra("Entregador", entregadorNameFromEntrega);
+                                                intent.putExtra("PublicKeyEntregador", publicKeyEntregador);
+                                                intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
+                                                intent.putExtra("UidEntregador", uidEntregador);
+                                                intent.putExtra("idProduto", textProductID.getText().toString());
+                                                intent.putExtra("tituloProduto", textnomeL.getText().toString());
+                                                context.startActivity(intent);
+
+                                            }
+                                        });
+
+                                    }
+                                }).show();
                  }
 
                     if(statusdaentrega.equals("Entregue")){
