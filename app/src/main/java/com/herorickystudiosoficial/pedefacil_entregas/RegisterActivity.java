@@ -124,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                 || editCPF.getText().toString().equals("")
                 || editEmail.getText().toString().equals("")
                 || editSenha.getText().toString().equals("")
-                || localização.equals(""))
+                || editEnderecoLoja.getText().toString().equals(""))
         {
             Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
 
@@ -222,8 +222,8 @@ public class RegisterActivity extends AppCompatActivity {
                     || editCPF.getText().toString().equals("")
                     || editEmail.getText().toString().equals("")
                     || editSenha.getText().toString().equals("")
-                    || editChaveSecreta.getText().equals("")
-                    || editChavePublica.getText().equals(""))
+                    || editChaveSecreta.getText().toString().equals("")
+                    || editChavePublica.getText().toString().equals(""))
             {
                 Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
 
@@ -286,6 +286,28 @@ public class RegisterActivity extends AppCompatActivity {
                             System.out.println("Ocorreu um erro: "+ e);
                         }
                     });
+                    }else{
+                        new AlertDialog.Builder(RegisterActivity.this)
+                                .setTitle("Aviso!")
+                                .setMessage("A chave digitada está incorreta, por favor, faça o registro na stripe.com e coloque a chave publicavel e a chave secreta!")
+                                .setCancelable(true)
+                                .setNegativeButton("Acessar Stripe", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        String url = "https://stripe.com/br";
+                                        Intent i = new Intent(Intent.ACTION_VIEW);
+                                        i.setData(Uri.parse(url));
+                                        startActivity(i);
+
+                                    }
+                                })
+                                .setPositiveButton("Dispersar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
                     }
                 }else{
 
