@@ -11,8 +11,8 @@ android {
         applicationId "com.herorickystudiosoficial.pedefacil_entregas"
         minSdk 21
         targetSdk 33
-        versionCode 7
-        versionName "1.4.0"
+        versionCode 8
+        versionName "1.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
