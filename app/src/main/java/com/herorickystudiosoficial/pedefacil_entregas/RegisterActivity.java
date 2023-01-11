@@ -228,8 +228,9 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
 
             }else{
-                if(publicKey.contains("pk_live") || secretKey.contains("sk_live")){
+                if(publicKey.contains("pk_live") ){
 
+                    if(secretKey.contains("sk_live")){
                     FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -285,7 +286,7 @@ public class RegisterActivity extends AppCompatActivity {
                             System.out.println("Ocorreu um erro: "+ e);
                         }
                     });
-
+                    }
                 }else{
 
                     new AlertDialog.Builder(RegisterActivity.this)
