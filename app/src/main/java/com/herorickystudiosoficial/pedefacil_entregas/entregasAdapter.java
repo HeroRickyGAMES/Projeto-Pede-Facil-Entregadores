@@ -30,7 +30,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
     Context context;
     ArrayList<cardsEntregas> list;
     private FirebaseFirestore usersDb;
-    String UID, entregadorName, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, LocalEntregaa , localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador, precorestante, latitudeEntregador, logitudeEntregador, statusDoProduto, RazaodoEntregador, LocalizacaoEntregador, LatitudeDoEntregador, logitudeDoEntregador;
+    String UID, entregadorName,pagodepois ,  pagardepois, statusdaentrega, entregadorNameFromEntrega, latitude, longitude, LocalEntregaa , localizaçãoloja, localizacaoEntregador, preco, uidEntregador, publicKeyEntregador, secretKeyEntregador, precorestante, latitudeEntregador, logitudeEntregador, statusDoProduto, RazaodoEntregador, LocalizacaoEntregador, LatitudeDoEntregador, logitudeDoEntregador;
     Double latiInt, longInt;
 
     public entregasAdapter(Context context, ArrayList<cardsEntregas> list) {
@@ -113,6 +113,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                     statusdaentrega = document.getString("statusDoProduto");
                     entregadorNameFromEntrega = document.getString("entreguePor");
                     uidEntregador = document.getString("uidEntregador");
+                    pagardepois = document.getString("pagardepois");
                     preco = document.getString("Preço");
 
 
@@ -130,11 +131,15 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                         new AlertDialog.Builder(context)
                                 .setTitle("Pagar agora")
                                 .setMessage("Deseja pagar a entrega agora?")
-                                .setCancelable(true).setPositiveButton("Pagar somente apos a entrega", new DialogInterface.OnClickListener() {
+                                .setCancelable(true)
+                                .setNegativeButton("Pagar somente após a entrega", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        //Importa um valor para o banco de dados que certifica que o cliente irá pagar depois.
+                                        Map<String, Object> putdb = new HashMap<>();
+                                        putdb.put("statusDoProduto", "Pronto para a entrega");
+                                        putdb.put("pagardepois", "true");
+                                        entregaDoc.update(putdb);
 
                                     }
                                 })
@@ -160,6 +165,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                                 intent.putExtra("PublicKeyEntregador", publicKeyEntregador);
                                                 intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
                                                 intent.putExtra("UidEntregador", uidEntregador);
+                                                intent.putExtra("pagardepois", pagardepois);
                                                 intent.putExtra("idProduto", textProductID.getText().toString());
                                                 intent.putExtra("tituloProduto", textnomeL.getText().toString());
                                                 context.startActivity(intent);
@@ -178,10 +184,69 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                         LocalizacaoEntregador = document.getString("LocalizacaoEntregador");
                         LatitudeDoEntregador = document.getString("LatitudeDoEntregador");
                         logitudeDoEntregador = document.getString("logitudeEntregador");
+                        pagodepois = "Não";
+
+                        if(pagardepois.equals("true")){
+
+                            DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
+
+                            entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                                    Intent intent = new Intent(context, paymentDeveloper.class);
+
+                                    DocumentSnapshot document3 = task.getResult();
+
+                                    publicKeyEntregador = document3.getString("publicKey");
+                                    secretKeyEntregador = document3.getString("secretKey");
+
+                                    intent.putExtra("Preco", preco);
+                                    intent.putExtra("Entregador", entregadorNameFromEntrega);
+                                    intent.putExtra("PublicKeyEntregador", publicKeyEntregador);
+                                    intent.putExtra("SecretKeyEntregador", secretKeyEntregador);
+                                    intent.putExtra("UidEntregador", uidEntregador);
+                                    intent.putExtra("pagardepois", pagardepois);
+                                    intent.putExtra("idProduto", textProductID.getText().toString());
+                                    intent.putExtra("tituloProduto", textnomeL.getText().toString());
+                                    context.startActivity(intent);
+
+                                }
+                            });
+
+                        }else{
+
+                        }
+
+                        if(pagardepois.equals("false")){
+
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Relatorio de entrega.")
+                                    .setMessage("Status do produto: " + statusDoProduto + " \n " + " \n " + "Razão do entregador: " + RazaodoEntregador + " \n " + " \n " + "Localização do entregador quando fez a entrega: " + LocalizacaoEntregador + " \n " + " \n " + "Latitude do entregador quando fez a entrega: " + LatitudeDoEntregador + " \n " + " \n " + "Longitude do Entregador quando fez a entrega: " + logitudeDoEntregador+ " \n " + " \n " + "Pago depois? " + pagodepois)
+                                    .setCancelable(true)
+                                    .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }).show();
+
+                        }else{
+
+                        }
+                    }
+
+                    if(statusdaentrega.equals("Entregue e pago")){
+                        statusDoProduto = document.getString("statusDoProduto");
+                        RazaodoEntregador = document.getString("RazãodoEntregador");
+                        LocalizacaoEntregador = document.getString("LocalizacaoEntregador");
+                        LatitudeDoEntregador = document.getString("LatitudeDoEntregador");
+                        logitudeDoEntregador = document.getString("logitudeEntregador");
+                        pagodepois = "Sim";
 
                         new AlertDialog.Builder(context)
                                 .setTitle("Relatorio de entrega.")
-                                .setMessage("Status do produto: " + statusDoProduto + " \n " + "Razão do entregador: " + RazaodoEntregador + " \n " + "Localização do entregador quando fez a entrega: " + LocalizacaoEntregador + " \n "+ "Latitude do entregador quando fez a entrega: " + LatitudeDoEntregador + " \n "+ "Longitude do Entregador quando fez a entrega: " + logitudeDoEntregador)
+                                .setMessage("Status do produto: " + statusDoProduto + " \n " + " \n "  + "Razão do entregador: " + RazaodoEntregador + " \n " + " \n " + "Localização do entregador quando fez a entrega: " + LocalizacaoEntregador + " \n " + " \n " + "Latitude do entregador quando fez a entrega: " + LatitudeDoEntregador + " \n " + " \n " + "Longitude do Entregador quando fez a entrega: " + logitudeDoEntregador + " \n " + " \n " + "Pago depois? " + pagodepois)
                                 .setCancelable(true)
                                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                                     @Override
@@ -191,6 +256,37 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                 }).show();
 
                     }
+
+                        if(statusdaentrega.equals("Pagas todas as taxas e pagamento depois")){
+
+                            precorestante = document.getString("PrecoRestante");
+
+                            DocumentReference entregaDoc =  usersDb.collection("Entregador").document(uidEntregador);
+
+                            entregaDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                                    DocumentSnapshot document3 = task.getResult();
+
+                                    publicKeyEntregador = document3.getString("publicKey");
+                                    secretKeyEntregador = document3.getString("secretKey");
+
+                                    Intent intent2 = new Intent(context, paymentComplete.class);
+
+                                    intent2.putExtra("PrecoRestante", precorestante);
+                                    intent2.putExtra("UidEntregador",  uidEntregador);
+                                    intent2.putExtra("idProduto",  textProductID.getText().toString());
+                                    intent2.putExtra("tituloProduto",  textnomeL.getText().toString());
+                                    intent2.putExtra("PublicKeyEntregador",  publicKeyEntregador);
+                                    intent2.putExtra("SecretKeyEntregador",  secretKeyEntregador);
+                                    intent2.putExtra("pagardepois", pagardepois);
+
+                                    context.startActivity(intent2);
+
+                                }
+                            });
+                        }
 
                     if(statusdaentrega.equals("Pagas todas as taxas")){
 
@@ -215,6 +311,7 @@ public class entregasAdapter extends RecyclerView.Adapter<entregasAdapter.MyView
                                 intent2.putExtra("tituloProduto",  textnomeL.getText().toString());
                                 intent2.putExtra("PublicKeyEntregador",  publicKeyEntregador);
                                 intent2.putExtra("SecretKeyEntregador",  secretKeyEntregador);
+                                intent2.putExtra("pagardepois", pagardepois);
 
                                 context.startActivity(intent2);
 

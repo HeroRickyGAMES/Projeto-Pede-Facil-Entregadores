@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String YOUR_CLIENT_ID = "";
     private FirebaseFirestore usersDb;
-    private String UID, nomeUser, trabalhaLoja, lojaName,statusconta, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
+    private String UID, nomeUser, trabalhaLoja,appversionserver , lojaName,statusconta, productName, lojaLocal, entregaLocal, preco, statusDoProduto, entreguePor, uidEntregador, latDb, longDB, lat, log, userLatitude, userLongitude, EndereçoEntregador, productID;
     private double latitude, longitude, distance;
     private RecyclerView viewEntregas;
     private RecyclerView.Adapter entregasAdapter;
@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
         updateListEntregador();
         updateListLoja();
 
+        versaodoapp();
+
     }
     public void onclickfab(View view){
         //Manda para a nova Activity
@@ -145,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
                                 uidEntregador = dataSnapshot.get("uidEntregador").toString();
                                 productID = dataSnapshot.get("id").toString();
 
+                                if(!statusDoProduto.equals("Entregue e pago")){
+
                                 try {
                                     List addressList = geocoder.getFromLocationName(lojaLocal, 1);
                                     if (addressList != null && addressList.size() > 0) {
@@ -183,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 adapter.notifyDataSetChanged();
                                 }
+                            }
                         }
                     });
                 }else if (statusconta.equals("Banido")){
@@ -272,4 +277,45 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
+    public void versaodoapp(){
+        usersDb.collection("Server").document("ServerValues").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                DocumentSnapshot document = task.getResult();
+
+                if(document.exists()){
+
+                    appversionserver = document.getString("app-version");
+                    String versionName = BuildConfig.VERSION_NAME;
+
+                    System.out.println(versionName);
+                    System.out.println(appversionserver);
+
+                    if(!appversionserver.equals(versionName)){
+
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("A versão do aplicativo em seu dispositivo está desatualizada!")
+                                .setMessage("A versão do aplicativo em seu dispositivo está desatualizada, por favor, atualize o seu aplicativo! ( A versão que você está usando é a " +"*"+ versionName + "*" + " ). " + " Mas a versão mais atual é  " + "*" +  appversionserver + "*" + "\n\n" + "Por favor, atualise o app, porque diversos bugs e diversas coisas podem mudar de versão para versão, e permanecer numa versão antiga pode lhe causar problemas com o uso do app!" + "\n")
+                                .setCancelable(false)
+                                .setPositiveButton("Atualizar app", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        String url = "https://github.com/HeroRickyGAMES/Projeto-Pede-Facil-Entregadores/releases";
+                                        Intent i = new Intent(Intent.ACTION_VIEW);
+                                        i.setData(Uri.parse(url));
+                                        startActivity(i);
+
+                                    }
+                                }).show();
+
+                    }
+                }
+
+            }
+        });
+    }
+
 }

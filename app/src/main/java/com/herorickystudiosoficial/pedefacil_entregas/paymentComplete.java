@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class paymentComplete extends AppCompatActivity {
 
-    String PrecoRestante, UidEntregador, idProduto, tituloProduto, PublicKey, SecretKey, customerID, EphericalKey, ClientSecret;
+    String PrecoRestante, UidEntregador, idProduto, tituloProduto, PublicKey, SecretKey, customerID, EphericalKey, ClientSecret, pagardepois;
 
     private FirebaseFirestore usersDb;
     PaymentSheet paymentSheet;
@@ -49,6 +49,7 @@ public class paymentComplete extends AppCompatActivity {
         UidEntregador = getIntent().getExtras().getString("UidEntregador");
         idProduto = getIntent().getExtras().getString("idProduto");
         tituloProduto = getIntent().getExtras().getString("tituloProduto");
+        pagardepois = getIntent().getExtras().getString("pagardepois");
 
         PublicKey = getIntent().getExtras().getString("PublicKeyEntregador");
         SecretKey = getIntent().getExtras().getString("SecretKeyEntregador");
@@ -89,36 +90,72 @@ public class paymentComplete extends AppCompatActivity {
 
             Toast.makeText(this, "Pagamento feito com sucesso!", Toast.LENGTH_SHORT).show();
 
+            if(pagardepois.equals("true")){
 
-            DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
+                DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
 
-            Map<String, Object> data = new HashMap<>();
-            data.put("statusDoProduto", "Pronto para a entrega");
-            data.put("RazãodoEntregador", "");
-            data.put("LocalizacaoEntregador", "");
-            data.put("LatitudeDoEntregador", "");
-            data.put("logitudeEntregador", "");
-            entrega.update(data);
+                Map<String, Object> data = new HashMap<>();
+                data.put("statusDoProduto", "Entregue e pago");
+                entrega.update(data);
 
-            Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
 
-            startActivity(intent);
+                startActivity(intent);
+
+            }
+
+            if(pagardepois.equals("false")){
+                DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("statusDoProduto", "Pronto para a entrega");
+                data.put("RazãodoEntregador", "");
+                data.put("LocalizacaoEntregador", "");
+                data.put("LatitudeDoEntregador", "");
+                data.put("logitudeEntregador", "");
+                entrega.update(data);
+
+                Intent intent = new Intent(this, MainActivity.class);
+
+                startActivity(intent);
+            }
+
 
         }else{
             Toast.makeText(this, "Pagamento cancelado, por favor, tente novamente!", Toast.LENGTH_SHORT).show();
 
-            DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
 
-            Map<String, Object> data = new HashMap<>();
-            data.put("statusDoProduto", "Pagas todas as taxas");
-            data.put("PrecoRestante", PrecoRestante);
+            if(pagardepois.equals("true")){
 
-            entrega.update(data);
+                DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
 
-            Intent intent = new Intent(paymentComplete.this,MainActivity.class);
-            startActivity(intent);
+                Map<String, Object> data = new HashMap<>();
+                data.put("statusDoProduto", "Pagas todas as taxas e pagamento depois");
+                data.put("PrecoRestante", PrecoRestante);
 
-            finish();
+                entrega.update(data);
+
+                Intent intent = new Intent(paymentComplete.this,MainActivity.class);
+                startActivity(intent);
+
+                finish();
+
+            }
+
+            if(pagardepois.equals("false")){
+                DocumentReference entrega =  usersDb.collection("Solicitacoes-Entregas").document(idProduto);
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("statusDoProduto", "Pagas todas as taxas");
+                data.put("PrecoRestante", PrecoRestante);
+
+                entrega.update(data);
+
+                Intent intent = new Intent(paymentComplete.this,MainActivity.class);
+                startActivity(intent);
+
+                finish();
+            }
         }
 
     }
@@ -227,7 +264,7 @@ public class paymentComplete extends AppCompatActivity {
 
         paymentSheet.presentWithPaymentIntent(
                 ClientSecret,
-                new PaymentSheet.Configuration("Taxa do desenvolvedor", new PaymentSheet.CustomerConfiguration(
+                new PaymentSheet.Configuration("Pagamento do Motorista", new PaymentSheet.CustomerConfiguration(
                         customerID,
                         EphericalKey
                 ))

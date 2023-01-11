@@ -322,6 +322,7 @@ public class mandarSolicitacao extends AppCompatActivity {
         data.put("logitudeEntregador", "");
         data.put("LocalizacaoEntregador", "");
         data.put("RazãodoEntregador", "");
+        data.put("pagardepois", "false");
         data.put("Data de publicação", calendarioData + " " + hora);
 
 

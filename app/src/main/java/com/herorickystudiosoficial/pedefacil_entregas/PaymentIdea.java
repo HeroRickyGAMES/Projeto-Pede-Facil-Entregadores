@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class PaymentIdea extends AppCompatActivity {
 
-    String PublicKeyIdea, SecretKeyIdea, idProduto, UidEntregador, tituloProduto, PrecoRestante, taxadoIdealista, customerID, EphericalKey, ClientSecret, PublicKeyEntregador, SecretKeyEntregador;
+    String PublicKeyIdea, pagardepois, SecretKeyIdea, idProduto, UidEntregador, tituloProduto, PrecoRestante, taxadoIdealista, customerID, EphericalKey, ClientSecret, PublicKeyEntregador, SecretKeyEntregador;
     private FirebaseFirestore usersDb;
     PaymentSheet paymentSheet;
 
@@ -48,6 +48,7 @@ public class PaymentIdea extends AppCompatActivity {
         PrecoRestante =  getIntent().getExtras().getString("PrecoRestante");
         PublicKeyEntregador = getIntent().getExtras().getString("PublicKeyEntregador");
         SecretKeyEntregador = getIntent().getExtras().getString("SecretKeyEntregador");
+        pagardepois = getIntent().getExtras().getString("pagardepois");
 
         System.out.println("ID do produto" + idProduto);
 
@@ -96,6 +97,7 @@ public class PaymentIdea extends AppCompatActivity {
             intent.putExtra("tituloProduto", tituloProduto);
             intent.putExtra("PublicKeyEntregador", PublicKeyEntregador);
             intent.putExtra("SecretKeyEntregador", SecretKeyEntregador);
+            intent.putExtra("pagardepois", pagardepois);
 
             startActivity(intent);
 
