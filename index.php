@@ -1,4 +1,1 @@
-<?php
-header('Location: site/index.html');
-exit
-?>
+<? header("location: site/index.html"); ?>
